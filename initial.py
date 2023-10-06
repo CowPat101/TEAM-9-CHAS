@@ -8,11 +8,11 @@ pygame.init()
 display_width = 800
 display_height = 600
 
-s1 = pygame.mixer.Sound("placeholder sounds/beep1.ogg")
-s2 = pygame.mixer.Sound("placeholder sounds/beep2.ogg")
-s3 = pygame.mixer.Sound("placeholder sounds/beep3.ogg")
-s4 = pygame.mixer.Sound("placeholder sounds/beep4.ogg")
-s5 = pygame.mixer.Sound("placeholder sounds/beep5.ogg")
+s1 = pygame.mixer.Sound("placeholder_sounds/beep1.ogg")
+s2 = pygame.mixer.Sound("placeholder_sounds/beep2.ogg")
+s3 = pygame.mixer.Sound("placeholder_sounds/beep3.ogg")
+s4 = pygame.mixer.Sound("placeholder_sounds/beep4.ogg")
+s5 = pygame.mixer.Sound("placeholder_sounds/beep5.ogg")
 
 pause = False
 
@@ -23,7 +23,7 @@ def quitgame():
 def loop():
 	paused = False
 	
-	pygame.mixer.music.load("placeholder sounds/simple-loop.ogg")
+	pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg")
 	pygame.mixer.music.play(-1)
 	
 	while not paused:
