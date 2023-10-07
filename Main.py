@@ -144,6 +144,7 @@ def next_game(settings):
     next_menu.add.label(title="You have unlocked the next level!", align=pm.locals.ALIGN_CENTER)
     #increment the global variable level by one
     newSetting = Settings.Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(), settings.getLevel()+1)
+    settings.setLevel(settings.getLevel()+1)
     reset_config_file_new_user(newSetting)
     next_menu.add.button(title="Next Level", 
                         action=lambda: display_game_screen(0,settings), align=pm.locals.ALIGN_CENTER)
