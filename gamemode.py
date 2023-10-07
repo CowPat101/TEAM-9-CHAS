@@ -24,14 +24,14 @@ class Clapper(Game):
         keybinds = {"clap": pygame.K_SPACE,}
         self.set_keybinds(keybinds)
 
-        self.t0= time.time_ns()
+        self.t0= time.time_ns() # sets initial time
+        self.clap_buffer = [] #ideally 
 
-        self.clap_buffer = []
-
-        self.clapout = False
+        self.clapout = False #makes it clap once
         
-        self.music("placeholder_sounds/simple-loop.ogg")
+        self.music("placeholder_sounds/simple-loop.ogg") #links music file
 
+        #list of notes that need playing, ideally this is done through a level file of some sort or something
         self.note_timings = [self.beat_to_seconds(1), 
                              self.beat_to_seconds(2),
                              self.beat_to_seconds(3),
@@ -40,27 +40,26 @@ class Clapper(Game):
 
         print(self.note_timings)
 
-        self.a = True
-
         self.next_note()
 
         self.response = True
 
-
-
+    #converts beat timings to seconds
     def beat_to_seconds(self, value):
         return int(value*60*10**9/self.tempo)
 
+    #checks events, just keypress for now
     def eventhandler(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == self.keybinds["clap"]:
                 pygame.mixer.Sound.play(self.sounds["sound_1"])
                 self.clap_buffer.append(time.time_ns() - self.t0)
     
+    #code to run when clap occurs
     def call_clap(self):
         pygame.mixer.Sound.play(self.sounds["sound_1"])
-        print("c")
     
+    #sets next note timing
     def next_note(self):
         try:
             self.next_note_time = self.note_timings.pop(0)
@@ -68,7 +67,7 @@ class Clapper(Game):
         except:
             pass
 
-    
+    #sets music and tempo
     def music(self, file_src):
         pygame.mixer.music.load(file_src) #sets music
         pygame.mixer.music.play(-1) #"-1" plays music indefinitely
@@ -78,15 +77,11 @@ class Clapper(Game):
         
     def game_logic(self):
         
-        #play claps
-        if time.time_ns() - self.t0 > self.next_note_time and self.clapout == False:
+        #checks if there's a note queued up and plays it
+        if time.time_ns() - self.t0 > self.next_note_time and self.clapout == False: 
             self.call_clap()
             self.clapout = True
             self.next_note()
-        
-        if time.time_ns() - self.t0 > 5*10**9 and self.a == True:
-            print(self.clap_buffer)
-            self.a = False
 
 
 def main():
@@ -98,48 +93,10 @@ def main():
     display_width = 800
     display_height = 600
     pygame.display.set_mode((display_width,display_height))
-    
-    """
-    sounds = {"sound_1": {"source":"placeholder_sounds/beep1.ogg", "volume": 1,},
-              "sound_2": {"source":"placeholder_sounds/beep2.ogg", "volume": 1,},
-              "sound_3": {"source":"placeholder_sounds/beep3.ogg", "volume": 1,},
-              "sound_4": {"source":"placeholder_sounds/beep4.ogg", "volume": 1,},  
-              "sound_5": {"source":"placeholder_sounds/beep5.ogg", "volume": 1,}}
-
-    keybinds = {"s0": pygame.K_a,
-                "s1": pygame.K_s,
-                "s2": pygame.K_d,
-                "s3": pygame.K_f,
-                "s4": pygame.K_g,
-                "pause": pygame.K_p,
-                }
-    
-
-    class Piano(Game):
-        def __init__(self):
-            Game.__init__(self)
-        
-        def eventhandler(self, event):
-            if event.type == pygame.KEYDOWN:
-                if event.key == self.keybinds["s0"]:
-                    pygame.mixer.Sound.play(self.sounds["sound_1"])
-                if event.key == self.keybinds["s1"]:
-                    pygame.mixer.Sound.play(self.sounds["sound_2"])
-                if event.key == self.keybinds["s2"]:
-                    pygame.mixer.Sound.play(self.sounds["sound_3"])
-                if event.key == self.keybinds["s3"]:
-                    pygame.mixer.Sound.play(self.sounds["sound_4"])
-                if event.key == self.keybinds["s4"]:
-                    pygame.mixer.Sound.play(self.sounds["sound_5"])
-                    """
             
     current_game = Clapper()
-    
-    """    pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
-    pygame.mixer.music.play(-1) #"-1" plays music indefinitely
-    pygame.mixer.music.set_volume(0.1)  # Adjust the volume level (0.0 - 1.0)
-    """
-    
+
+    #game loop
     while True:
         for event in pygame.event.get():
             current_game.eventhandler(event)
