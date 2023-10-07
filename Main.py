@@ -13,12 +13,19 @@ window_height = 600
 screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("My Game")
 
+global Subtitles_global
 Subtitles_global = False
+global Font_global
 Font_global = "arial"
+global Font_size_global 
 Font_size_global = "medium"
+global Font_colour_global
 Font_colour_global = "black"
+global Audio_global
 Audio_global = 0.5
+global SFX_global
 SFX_global = 1.0
+global Level_global
 Level_global = 1
  
 
@@ -135,10 +142,12 @@ def next_game():
     # Create a Pygame Menu instance
     next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
-    # Add buttons to the menu and increments levels_global by one
+    # Add buttons to the menu
     next_menu.add.label(title="You have completed the level!", align=pm.locals.ALIGN_CENTER)
     next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
     next_menu.add.label(title="You have unlocked the next level!", align=pm.locals.ALIGN_CENTER)
+    #increment the global variable level by one
+    global Level_global 
     Level_global += 1
     next_menu.add.button(title="Next Level", 
                         action=display_game_screen(0), align=pm.locals.ALIGN_CENTER)
@@ -170,8 +179,10 @@ def display_game_screen(gamemode):
                 if current_round == total_rounds:
                     next_game()
                     return
-                claps = int(game.get_round(current_round))
                 if computer_played == False:
+                    claps = int(game.get_round(current_round))
+
+                    print(claps)
                     for i in range(claps):
                         clap()
                         time.sleep(0.5)
