@@ -171,9 +171,10 @@ def display_game_screen(gamemode, settings):
     if gamemode == 0:
         try:
             game = Campaign.Campaign(settings.getLevel())
+            print(f"level: {settings.getLevel()}")
         except:
             finished_campaign(settings)
-            return
+            display_main_menu()
     total_rounds = game.get_rounds()
     current_round = 0
     played = 0
@@ -197,16 +198,17 @@ def display_game_screen(gamemode, settings):
 
                     clap()
                     # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), IMAGE)
+                    comp = Player((window_width / 2, window_height / 2), IMAGE)
                     # add the sprite to the group
-                    player_group = pygame.sprite.Group(player)
+                    comp_group = pygame.sprite.Group(comp)
                     # draw the sprite
-                    player_group.draw(screen)
+                    comp_group.draw(screen)
                     pygame.display.flip()  # update the screen
                     pygame.time.delay(500)
-                    player_group.empty()
-                    player_group.draw(screen)
-                    pygame.display.flip()  # update the screen
+                    # the sprite with image deletes itself
+                    screen.blit(background, (0, 0))
+                    pygame.display.flip()  
+                    pygame.time.delay(500)
                     print(f"clap {i} of {claps}" )
                 computer_played = True
 
@@ -218,6 +220,8 @@ def display_game_screen(gamemode, settings):
                 current_round += 1
                 played = 0
                 computer_played = False
+            
+            
         for event in pygame.event.get():
             if gamemode == 0:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -262,7 +266,7 @@ def display_game_screen(gamemode, settings):
                     if event.key == pygame.K_h:
                         clap()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return
+                display_main_menu()
             
             if event.type == pygame.QUIT:
                 pygame.quit()
