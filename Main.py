@@ -45,6 +45,13 @@ def display_main_menu():
     # Create a Pygame Menu instance
     main_menu = pm.Menu("Main Menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
+    #check if config file exists, if not create it
+    try:
+        config_object = configparser.ConfigParser()
+        config_object.read("config.ini")
+    except:
+        reset_config_file_new_user()
+
     # Add buttons to the menu
     main_menu.add.button(title="Play", 
                         action=display_game_menu, align=pm.locals.ALIGN_CENTER)
@@ -61,8 +68,6 @@ def display_main_menu():
         print(f"[{section}]")
         for key in config_object[section]:
             print(f"{key} : {config_object[section][key]}")
-    
-    reset_config_file_new_user()
     
     main_menu.mainloop(screen)
 
