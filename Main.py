@@ -97,7 +97,7 @@ def display_main_menu():
 
     # Add buttons to the menu
     main_menu.add.button(title="Play", 
-                        action=display_game_menu, align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_menu(settings), align=pm.locals.ALIGN_CENTER)
     main_menu.add.button(title="Settings", 
                         action=lambda: display_settings_menu(settings), align=pm.locals.ALIGN_CENTER)
     main_menu.add.button(title="Quit", 
@@ -116,7 +116,7 @@ def display_main_menu():
     main_menu.mainloop(screen)
 
 # display game menu
-def display_game_menu():
+def display_game_menu(settings):
     # Create a Pygame Menu instance
     game_menu = pm.Menu("Game menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
@@ -124,16 +124,16 @@ def display_game_menu():
 
     # Add buttons to the menu
     game_menu.add.button(title="Campaign mode", 
-                        action=lambda: display_game_screen(0), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(0, settings), align=pm.locals.ALIGN_CENTER)
     game_menu.add.button(title="Freestyle mode", 
-                        action=lambda: display_game_screen(1), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(1, settings), align=pm.locals.ALIGN_CENTER)
     # Create a back button to return to the main menu
     game_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
     # Start the menu
     game_menu.mainloop(screen)
 
-def next_game():
+def next_game(settings):
     # Create a Pygame Menu instance
     next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
@@ -142,35 +142,37 @@ def next_game():
     next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
     next_menu.add.label(title="You have unlocked the next level!", align=pm.locals.ALIGN_CENTER)
     #increment the global variable level by one
-    global Level_global 
-    Level_global += 1
+    newSetting = Settings.Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(), settings.getLevel()+1)
+    reset_config_file_new_user(newSetting)
     next_menu.add.button(title="Next Level", 
-                        action=display_game_screen(0), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(0,settings), align=pm.locals.ALIGN_CENTER)
     next_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
-    reset_config_file_new_user()
     print("next level")
     # Start the menu
     next_menu.mainloop(screen)
 
-def finished_campaign():
+def finished_campaign(settings):
     # Create a Pygame Menu instance
     next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
     # Add buttons to the menu
     next_menu.add.label(title="You have completed the campaign!", align=pm.locals.ALIGN_CENTER)
     next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
-    Level_global = 0
+    newSetting = Settings.Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(),1)
+    reset_config_file_new_user(newSetting)
     next_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
     # Start the menu
     next_menu.mainloop(screen)
-def display_game_screen(gamemode):
+
+
+def display_game_screen(gamemode, settings):
     if gamemode == 0:
         try:
-            game = Campaign.Campaign(Level_global)
+            game = Campaign.Campaign(settings.getLevel())
         except:
-            finished_campaign()
+            finished_campaign(settings)
             return
     total_rounds = game.get_rounds()
     current_round = 0
@@ -184,32 +186,40 @@ def display_game_screen(gamemode):
 
         screen.blit(background, (0, 0))
         pygame.display.flip()  # update the screen
+        if gamemode == 0:
+            if current_round == total_rounds:
+                next_game(settings)
+                return
+            if computer_played == False:
+                pygame.time.delay(250)
+                claps = int(game.get_round(current_round))
+                for i in range(claps):
+
+                    clap()
+                    # make the sprite with image 1
+                    player = Player((window_width / 2, window_height / 2), IMAGE)
+                    # add the sprite to the group
+                    player_group = pygame.sprite.Group(player)
+                    # draw the sprite
+                    player_group.draw(screen)
+                    pygame.display.flip()  # update the screen
+                    pygame.time.delay(500)
+                    player_group.empty()
+                    player_group.draw(screen)
+                    pygame.display.flip()  # update the screen
+                    print(f"clap {i} of {claps}" )
+                computer_played = True
+
+            if played > claps:
+                played = 0
+                current_round = 0
+                computer_played = False
+            if played == claps:
+                current_round += 1
+                played = 0
+                computer_played = False
         for event in pygame.event.get():
             if gamemode == 0:
-                
-                if current_round == total_rounds:
-                    next_game()
-                    return
-                if computer_played == False:
-                    pygame.time.delay(1000)
-                    claps = int(game.get_round(current_round))
-
-                    print(claps)
-                    for i in range(claps):
-                        clap()
-                        pygame.time.delay(500)
-                        print(f"clap {i} of {claps}" )
-                    computer_played = True
-
-                if played > claps:
-                    played = 0
-                    current_round = 0
-                    computer_played = False
-                if played == claps:
-                    current_round += 1
-                    played = 0
-                    computer_played = False
-
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     # make the sprite with image 1
                     player = Player((window_width / 2, window_height / 2), IMAGE)
@@ -220,7 +230,7 @@ def display_game_screen(gamemode):
                     pygame.display.flip()  # update the screen
                     played += 1
                     clap()
-                    pygame.time.delay(500)  
+                    pygame.time.delay(250)  
                     print(f"played {played} of {claps}")                  
                 # when the user clicks the left mouse button play the sound
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -234,7 +244,7 @@ def display_game_screen(gamemode):
                     pygame.display.flip()  # update the screen
                     played += 1
                     clap()
-                    pygame.time.delay(500)      
+                    pygame.time.delay(250)      
                     print(f"played {played} of {claps}")
                     
             if gamemode == 1:
