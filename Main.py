@@ -5,6 +5,7 @@ import Campaign
 import configparser
 import os.path
 import Settings
+import time
 
 pygame.mixer.pre_init()
 pygame.init()
@@ -168,6 +169,38 @@ def finished_campaign(settings):
 
 
 def display_game_screen(gamemode, settings):
+
+    #Function to display a subtitle to the screen while allowing complete interaction with the game
+    def display():
+        if time.time() - text_start_time < 3:  # Display text for 3 seconds
+            #Choose a font and size
+            my_font = pygame.font.SysFont('Helvetica Neue', 30) 
+
+            # Make the text and text box surfaces
+            text_surface = my_font.render('Some Text', False, (255, 255, 255))  #Change font colour at the end
+            text_rect = text_surface.get_rect() 
+
+            # Create a new surface for the text box (Background colour)
+            text_box = pygame.Surface((text_rect.width, text_rect.height))
+            text_box.set_alpha(128)  # Set the alpha value of the color to make it transparent
+            text_box.fill((200, 200, 200))  # Fill with light gray color
+
+            #Modify the screen alignment of the text box
+
+            # Get the rectangle of the text surface and center it in the text box surface
+            text_rect.center = text_box.get_rect().center
+
+            # Blit the text surface onto the text box surface
+            text_box.blit(text_surface, text_rect)
+
+            # Get the new rectangle of the text surface and center it in the screen surface
+            text_rect = text_box.get_rect()
+            text_rect.midbottom = screen.get_rect().midbottom
+
+            # Blit the text box surface onto the main screen surface
+            screen.blit(text_box, text_rect)
+        else:
+            display_text = False
     if gamemode == 0:
         try:
             game = Campaign.Campaign(settings.getLevel())
@@ -195,7 +228,8 @@ def display_game_screen(gamemode, settings):
                 pygame.time.delay(250)
                 claps = int(game.get_round(current_round))
                 for i in range(claps):
-
+                    text_start_time = time.time()
+                    display()
                     clap()
                     # make the sprite with image 1
                     comp = Player((window_width / 2, window_height / 2), IMAGE)
@@ -238,6 +272,8 @@ def display_game_screen(gamemode, settings):
                     print(f"played {played} of {claps}")                  
                 # when the user clicks the left mouse button play the sound
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    text_start_time = time.time()
+                    display()
                     print("mouse clicked")
                     # make the sprite with image 1
                     player = Player((window_width / 2, window_height / 2), IMAGE)
