@@ -119,9 +119,9 @@ def display_game_menu():
 
     # Add buttons to the menu
     game_menu.add.button(title="Campaign mode", 
-                        action=campaign_mode, align=pm.locals.ALIGN_CENTER)
+                        action=display_game_screen(0), align=pm.locals.ALIGN_CENTER)
     game_menu.add.button(title="Freestyle mode", 
-                        action=freestyle_mode, align=pm.locals.ALIGN_CENTER)
+                        action=display_game_screen(1), align=pm.locals.ALIGN_CENTER)
     # Create a back button to return to the main menu
     game_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
@@ -177,23 +177,12 @@ def clap():
 
 
 def campaign_mode():
-    campaign.main()
     display_game_screen(0)
-    
-    
     pass
 def freestyle_mode():
-    display_game_screen(1)
     freestyle.main()
+    display_game_screen(1)
     pass
-
-#save the config file
-def save_config_file():
-    config_object = configparser.ConfigParser()
-
-
-    with open('config.ini', 'w') as conf:
-        config_object.write(conf)
 
 #Settings menu logic
 def display_settings_menu():
