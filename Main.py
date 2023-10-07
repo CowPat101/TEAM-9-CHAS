@@ -77,7 +77,7 @@ def display_game_screen(gamemode):
                         clap()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return
-                
+            
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
