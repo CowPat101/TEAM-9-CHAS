@@ -40,19 +40,30 @@ def display_game_menu():
                         action=freestyle_mode, align=pm.locals.ALIGN_CENTER)
     game_menu.add.button(title="Tutorial", 
                         action=tutorial_mode, align=pm.locals.ALIGN_CENTER)
-    
     # Create a back button to return to the main menu
     game_menu.add.button(title="Return To Main Menu", 
                         action=game_loop, align=pm.locals.ALIGN_CENTER) 
     # Start the menu
     game_menu.mainloop(screen)
 
+def display_game_screen():
+    # load background image to the screen
+    background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
+    screen.blit(background, (0, 0))
 
 def campaign_mode():
+    display_game_screen()
+    
     pass
+
+
 def freestyle_mode():
+    display_game_screen()
     pass
+
+
 def tutorial_mode():
+    display_game_screen()
     pass
 
 #Settings menu logic
