@@ -19,7 +19,7 @@ def display_main_menu():
 
     # Add buttons to the menu
     main_menu.add.button(title="Play", 
-                        action=game_loop, align=pm.locals.ALIGN_CENTER)
+                        action=display_game_menu, align=pm.locals.ALIGN_CENTER)
     main_menu.add.button(title="Settings", 
                         action=display_settings_menu, align=pm.locals.ALIGN_CENTER)
     main_menu.add.button(title="Quit", 
@@ -28,6 +28,32 @@ def display_main_menu():
     # Start the menu
     main_menu.mainloop(screen)
 
+# display game menu
+def display_game_menu():
+    # Create a Pygame Menu instance
+    game_menu = pm.Menu("Settings", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+
+    # Add buttons to the menu
+    game_menu.add.button(title="Campaign mode", 
+                        action=campaign_mode, align=pm.locals.ALIGN_CENTER)
+    game_menu.add.button(title="Freestyle mode", 
+                        action=freestyle_mode, align=pm.locals.ALIGN_CENTER)
+    game_menu.add.button(title="Tutorial", 
+                        action=tutorial_mode, align=pm.locals.ALIGN_CENTER)
+    
+    # Create a back button to return to the main menu
+    game_menu.add.button(title="Return To Main Menu", 
+                        action=game_loop, align=pm.locals.ALIGN_CENTER) 
+    # Start the menu
+    game_menu.mainloop(screen)
+
+
+def campaign_mode():
+    pass
+def freestyle_mode():
+    pass
+def tutorial_mode():
+    pass
 
 #Settings menu logic
 def display_settings_menu():
