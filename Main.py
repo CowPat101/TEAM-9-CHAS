@@ -53,10 +53,15 @@ def display_game_screen():
 
 def campaign_mode():
     display_game_screen()
+    
     pass
+
+
 def freestyle_mode():
     display_game_screen()
     pass
+
+
 def tutorial_mode():
     display_game_screen()
     pass
