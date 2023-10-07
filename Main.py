@@ -4,13 +4,13 @@ import time
 import pygame_menu as pm
 import colours as cs
 
-pygame.mixer.pre_init() #dark magic to ward away input lag, must be cast before pygame.init()
+pygame.mixer.pre_init()
 pygame.init()
 window_width = 800  # Set your window dimensions
 window_height = 600
 screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("My Game")
-
+ 
 #Display Main menu
 
 def display_main_menu():
@@ -47,7 +47,7 @@ def display_settings_menu():
 def draw_back_button():
     # Create a new surface for the button
     button = pygame.Surface((100, 50))
-    button.fill(cs.RED)  # Fill with red color
+    button.fill((255, 0, 0))  # Fill with red color
 
     # Get the rectangle of the button surface and set its top left position to (0, 0)
     button_rect = button.get_rect(topleft=(0, 0))
@@ -76,7 +76,7 @@ def game_loop():
             my_font = pygame.font.SysFont('Comic Sans MS', 30) 
 
             # Make the text and text box surfaces
-            text_surface = my_font.render('Some Text', False, (255, 255, 255))  #Change font colour at the end
+            text_surface = my_font.render('Some Text', False, cs.BLACK)  #Change font colour at the end
             text_rect = text_surface.get_rect() 
 
             # Create a new surface for the text box (Background colour)
@@ -109,7 +109,6 @@ def game_loop():
     exit_loop = False
     go_settings = False
     go_main = False
-    game = False
 
     while running:
         #These for loops look for keyboard inputs for their functions to run
@@ -125,14 +124,11 @@ def game_loop():
                     running = False
                     exit_loop = True
                     go_settings = True
-            else:
-                if game:
-                    game.eventhandler(event)
 
         #This loop runs the main game screen - WRITE YOUR GAME CODE IN THIS IF STATEMENT - FOR THE GAME SCREEN            
         if exit_loop == False:
 
-            screen.fill(cs.WHITE)  
+            screen.fill((0, 0, 0))  
 
             #Get the action from the back button on the game screen
             go_back = draw_back_button()
