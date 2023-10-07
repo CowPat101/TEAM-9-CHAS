@@ -267,6 +267,10 @@ def display_settings_menu():
 
     config_object.add_section('Level Reset')
     
+    # Sound Levels
+    settings_menu.add.range_slider("Music", 50, [0, 100], 1)
+    settings_menu.add.range_slider("SFX Volume", 50, [0, 100], 1)
+
     # Create a back button to return to the main menu
     settings_menu.add.button(title="Return To Main Menu", 
                         action=processSettingData, align=pm.locals.ALIGN_CENTER) 
