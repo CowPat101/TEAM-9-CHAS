@@ -1,5 +1,5 @@
 pass
 
 def main():
-    print("campaign mode")
+    print("Campaign mode")
     pass
