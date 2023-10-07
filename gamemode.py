@@ -18,7 +18,7 @@ class Clapper(Game):
         Game.__init__(self)
 
         #load clap sound
-        self.set_sounds({"sound_1": {"source":"placeholder_sounds/Kim_clap-1.ogg", "volume": 1,}})
+        self.set_sounds({"sound_1": {"source":"placeholder_sounds/Kim_clap-1.ogg", "volume": 0.1,}})
 
         #load keybindings
         keybinds = {"clap": pygame.K_SPACE,}
@@ -29,8 +29,27 @@ class Clapper(Game):
         self.clap_buffer = []
 
         self.clapout = False
+        
+        self.music("placeholder_sounds/simple-loop.ogg")
 
-        self.note_timings = [0, 500*10**6, 1500*10**6, 2500*10**6]
+        self.note_timings = [self.beat_to_seconds(1), 
+                             self.beat_to_seconds(2),
+                             self.beat_to_seconds(3),
+                             self.beat_to_seconds(4),
+                             self.beat_to_seconds(5)]
+
+        print(self.note_timings)
+
+        self.a = True
+
+        self.next_note()
+
+        self.response = True
+
+
+
+    def beat_to_seconds(self, value):
+        return int(value*60*10**9/self.tempo)
 
     def eventhandler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -40,27 +59,34 @@ class Clapper(Game):
     
     def call_clap(self):
         pygame.mixer.Sound.play(self.sounds["sound_1"])
-    
-    def response(self):
-        self.clap_buffer = []
+        print("c")
     
     def next_note(self):
-        self.next_note = self.note_timings.pop(-1)
-        self.clapout = False
+        try:
+            self.next_note_time = self.note_timings.pop(0)
+            self.clapout = False
+        except:
+            pass
 
     
-    def music(self, file):
-        pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
+    def music(self, file_src):
+        pygame.mixer.music.load(file_src) #sets music
         pygame.mixer.music.play(-1) #"-1" plays music indefinitely
         pygame.mixer.music.set_volume(0.1)  # Adjust the volume level (0.0 - 1.0)
 
         self.tempo = 80 #bpm
         
     def game_logic(self):
-        if time.time_ns() - self.t0 > self.next_note and self.clapout == False:
-            self.clapout = True
+        
+        #play claps
+        if time.time_ns() - self.t0 > self.next_note_time and self.clapout == False:
             self.call_clap()
-
+            self.clapout = True
+            self.next_note()
+        
+        if time.time_ns() - self.t0 > 5*10**9 and self.a == True:
+            print(self.clap_buffer)
+            self.a = False
 
 
 def main():
