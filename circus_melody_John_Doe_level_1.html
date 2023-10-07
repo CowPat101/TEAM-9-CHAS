@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #b0e0e6; /* Pastel blue background color */
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+        .certificate-container {
+            text-align: center;
+            margin-top: 20px; /* Adjust as needed */
+        }
+        .certificate-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .certificate-name {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .btn-print {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            top: 10px; /* Adjust to position the button at the top */
+            right: 10px; /* Adjust to position the button at the top right */
+        }
+        /* Style for the image */
+        .certificate-image {
+            max-width: calc(100% - 4px); /* Crop the image by 2 pixels on each side */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        /* Print-specific CSS */
+        @media print {
+            body {
+                background-color: #b0e0e6 !important; /* Set the background color for printing */
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-print" onclick="printPDF()">Print as PDF</button>
+    <div class="certificate-container">
+        <div class="certificate-title">Certificate of Completion</div>
+        <div class="certificate-name">Congratulations John Doe</div>
+        <div class="certificate-name">You have successfully completed level 1</div>
+        <img class="certificate-image" src="https://raw.githubusercontent.com/CowPat101/TEAM-9-CHAS/main/placeholder_sprites/Logo.png" alt="Certificate Image">
+    </div>
+    <script>
+        function printPDF() {
+            // Hide the button when it's pressed
+            document.querySelector('.btn-print').style.display = 'none';
+
+            // Trigger the print functionality
+            window.print();
+        }
+    </script>
+</body>
+</html>
