@@ -28,6 +28,14 @@ SFX_global = 1.0
 global Level_global
 Level_global = 1
  
+IMAGE = pygame.image.load("placeholder_sprites\hands.png").convert_alpha()
+IMAGE2 = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
+class Player(pygame.sprite.Sprite):
+
+    def __init__(self, pos, image):
+        super().__init__()
+        self.image = image
+        self.rect = self.image.get_rect(center=pos)
 
 #Reset the config file to default settings for new user
 def reset_config_file_new_user():
@@ -153,6 +161,7 @@ def next_game():
                         action=display_game_screen(0), align=pm.locals.ALIGN_CENTER)
     next_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+    reset_config_file_new_user()
     # Start the menu
     next_menu.mainloop(screen)
 
@@ -177,56 +186,73 @@ def display_game_screen(gamemode):
             return
     total_rounds = game.get_rounds()
     current_round = 0
-    finished_current_round = False
     played = 0
     computer_played = False
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
-    screen.blit(background, (0, 0))
-    pygame.display.flip()  # update the screen
-
-    # load an image to the screen to the bottom left corner
-    image = pygame.image.load("placeholder_sprites\Hands.png")
-    screen.blit(image, (0, 500))
     # game loop to keep the window open
     while True:
+        #clear the screen
+
+        screen.blit(background, (0, 0))
+        pygame.display.flip()  # update the screen
         for event in pygame.event.get():
             if gamemode == 0:
+                
                 if current_round == total_rounds:
                     next_game()
                     return
                 if computer_played == False:
-                    time.sleep(1)
+                    pygame.time.delay(1000)
                     claps = int(game.get_round(current_round))
 
                     print(claps)
                     for i in range(claps):
                         clap()
-                        time.sleep(0.5)
+                        pygame.time.delay(500)
                     computer_played = True
 
-                if played == claps:
-                    finished_current_round = True
                 if played > claps:
                     played = 0
                     current_round = 0
                     computer_played = False
-                if finished_current_round == True:
+                if played == claps:
                     current_round += 1
                     played = 0
-                    finished_current_round = False
                     computer_played = False
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    # make the sprite with image 1
+                    player = Player((window_width / 2, window_height / 2), IMAGE2)
+                    # add the sprite to the group
+                    player_group = pygame.sprite.Group(player)
+                    # draw the sprite
+                    player_group.draw(screen)
+                    pygame.display.flip()  # update the screen
                     played += 1
                     clap()
-                    time.sleep(0.5)
+                    pygame.time.delay(500)                    
                 # when the user clicks the left mouse button play the sound
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    # make the sprite with image 1
+                    player = Player((window_width / 2, window_height / 2), IMAGE2)
+                    # add the sprite to the group
+                    player_group = pygame.sprite.Group(player)
+                    # draw the sprite
+                    player_group.draw(screen)
+                    pygame.display.flip()  # update the screen
                     played += 1
                     clap()
-                    time.sleep(0.5)
-                
+                    pygame.time.delay(500)      
+                else:
+                    # make the sprite with image 1
+                    player = Player((window_width / 2, window_height / 2), IMAGE)
+                    # add the sprite to the group
+                    player_group = pygame.sprite.Group(player)
+                    # draw the sprite
+                    player_group.draw(screen)
+                    pygame.display.flip()  # update the screen  
+                    
             if gamemode == 1:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
