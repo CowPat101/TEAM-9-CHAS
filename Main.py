@@ -27,8 +27,7 @@ SFX_global = 1.0
 global Level_global
 Level_global = 1
  
-IMAGE = pygame.image.load("placeholder_sprites\hands.png").convert_alpha()
-IMAGE2 = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
+IMAGE = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, pos, image):
@@ -209,6 +208,7 @@ def display_game_screen(gamemode):
                     for i in range(claps):
                         clap()
                         pygame.time.delay(500)
+                        print(f"clap {i} of {claps}" )
                     computer_played = True
 
                 if played > claps:
@@ -222,7 +222,7 @@ def display_game_screen(gamemode):
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), IMAGE2)
+                    player = Player((window_width / 2, window_height / 2), IMAGE)
                     # add the sprite to the group
                     player_group = pygame.sprite.Group(player)
                     # draw the sprite
@@ -230,11 +230,13 @@ def display_game_screen(gamemode):
                     pygame.display.flip()  # update the screen
                     played += 1
                     clap()
-                    pygame.time.delay(500)                    
+                    pygame.time.delay(500)  
+                    print(f"played {played} of {claps}")                  
                 # when the user clicks the left mouse button play the sound
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    print("mouse clicked")
                     # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), IMAGE2)
+                    player = Player((window_width / 2, window_height / 2), IMAGE)
                     # add the sprite to the group
                     player_group = pygame.sprite.Group(player)
                     # draw the sprite
@@ -243,14 +245,7 @@ def display_game_screen(gamemode):
                     played += 1
                     clap()
                     pygame.time.delay(500)      
-                else:
-                    # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), IMAGE)
-                    # add the sprite to the group
-                    player_group = pygame.sprite.Group(player)
-                    # draw the sprite
-                    player_group.draw(screen)
-                    pygame.display.flip()  # update the screen  
+                    print(f"played {played} of {claps}")
                     
             if gamemode == 1:
                 if event.type == pygame.KEYDOWN:
