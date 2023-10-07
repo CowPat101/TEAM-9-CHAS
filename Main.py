@@ -11,6 +11,13 @@ window_width = 800  # Set your window dimensions
 window_height = 600
 screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("My Game")
+
+Subtitles_global = False
+Font_global = "arial"
+Font_size_global = "medium"
+Font_colour_global = "black"
+Mute_global = False
+Level_global = 1
  
 
 #Reset the config file to default settings for new user
@@ -18,22 +25,22 @@ def reset_config_file_new_user():
     config_object = configparser.ConfigParser()
 
     config_object['Subtitles'] = {
-        'subtitles_on': False
+        'subtitles_on': Subtitles_global
     }
     config_object['Font'] = {
-        'font_id': "arial"
+        'font_id': Font_global
     }
     config_object['Font Size'] = {
-        'sub_font_size': "medium"
+        'sub_font_size': Font_size_global
     }
     config_object['Font Colour'] = {
-        'sub_colour': "black"
+        'sub_colour': Font_colour_global
     }
     config_object['Audio'] = {
-        'mute': False
+        'mute': Mute_global
     }
     config_object['Levels'] = {
-        'level': 1
+        'level': Level_global
     }
 
     #save the config file
@@ -49,8 +56,35 @@ def display_main_menu():
     try:
         config_object = configparser.ConfigParser()
         config_object.read("config.ini")
+        #if config function exist then update the global variables
+        for section in config_object.sections():
+            if section == "Subtitles":
+                for key in config_object[section]:
+                    if key == "subtitles_on":
+                        Subtitles_global = config_object[section][key]
+            elif section == "Font":
+                for key in config_object[section]:
+                    if key == "font_id":
+                        Font_global = config_object[section][key]
+            elif section == "Font Size":
+                for key in config_object[section]:
+                    if key == "sub_font_size":
+                        Font_size_global = config_object[section][key]
+            elif section == "Font Colour":
+                for key in config_object[section]:
+                    if key == "sub_colour":
+                        Font_colour_global = config_object[section][key]
+            elif section == "Audio":
+                for key in config_object[section]:
+                    if key == "mute":
+                        Mute_global = config_object[section][key]
+            elif section == "Levels":
+                for key in config_object[section]:
+                    if key == "level":
+                        Level_global = config_object[section][key]
     except:
         reset_config_file_new_user()
+
 
     # Add buttons to the menu
     main_menu.add.button(title="Play", 
@@ -150,7 +184,7 @@ def freestyle_mode():
 def display_settings_menu():
 
     #Make the settings in config be reset to default
-    def reset_config_file():
+    def reset_settings():
         config_object['Subtitles'] = {
             'subtitles_on': False
         }
@@ -172,6 +206,21 @@ def display_settings_menu():
             config_object.write(conf)
         
         display_main_menu()
+
+    def reset_level():
+
+        config_object['Level Reset'] = {
+            'level': 1
+        }
+
+        #save the config file
+        with open('config.ini', 'w') as conf:
+            config_object.write(conf)
+        
+        display_main_menu()
+
+
+
 
 
 
@@ -208,9 +257,7 @@ def display_settings_menu():
                 config_object['Audio'] = {
                     'mute': settingsData[key]
                 }
-            elif key == "setting reset":
-                reset_config_file()
-            
+         
 
         #save the config file
         with open('config.ini', 'w') as conf:
@@ -262,13 +309,11 @@ def display_settings_menu():
 
     #Reset to default settings
 
-    settings_menu.add.toggle_switch(title="Reset Settings?", default=False, toggleswitch_id="setting reset")
-
-    config_object.add_section('Reset')
+    settings_menu.add.button(title="Reset settings", action=reset_settings, align=pm.locals.ALIGN_CENTER) 
 
     #Reset levels
 
-    settings_menu.add.toggle_switch(title="Reset levels?", default=False, toggleswitch_id="level reset")
+    settings_menu.add.button(title="Reset settings", action=reset_level, align=pm.locals.ALIGN_CENTER)
 
     config_object.add_section('Level Reset')
     
@@ -277,8 +322,7 @@ def display_settings_menu():
     settings_menu.add.range_slider("SFX Volume", 50, [0, 100], 1)
 
     # Create a back button to return to the main menu
-    settings_menu.add.button(title="Return To Main Menu", 
-                        action=processSettingData, align=pm.locals.ALIGN_CENTER) 
+    settings_menu.add.button(title="Return To Main Menu", action=processSettingData, align=pm.locals.ALIGN_CENTER) 
 
     # Start the settings menu
     settings_menu.mainloop(screen)
