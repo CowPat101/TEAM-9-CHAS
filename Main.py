@@ -1,9 +1,10 @@
+import time
 import pygame
 import sys
 import pygame_menu as pm
-import campaign
-import freestyle
+import Campaign
 import configparser
+import os.path
 
 pygame.mixer.pre_init()
 pygame.init()
@@ -11,6 +12,21 @@ window_width = 800  # Set your window dimensions
 window_height = 600
 screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("My Game")
+
+global Subtitles_global
+Subtitles_global = False
+global Font_global
+Font_global = "arial"
+global Font_size_global 
+Font_size_global = "medium"
+global Font_colour_global
+Font_colour_global = "black"
+global Audio_global
+Audio_global = 0.5
+global SFX_global
+SFX_global = 1.0
+global Level_global
+Level_global = 1
  
 
 #Reset the config file to default settings for new user
@@ -18,24 +34,27 @@ def reset_config_file_new_user():
     config_object = configparser.ConfigParser()
 
     config_object['Subtitles'] = {
-        'subtitles_on': False
+        'subtitles_on': Subtitles_global
     }
     config_object['Font'] = {
-        'font_id': "arial"
+        'font_id': Font_global
     }
     config_object['Font Size'] = {
-        'sub_font_size': "medium"
+        'sub_font_size': Font_size_global
     }
     config_object['Font Colour'] = {
-        'sub_colour': "black"
+        'sub_colour': Font_colour_global
     }
     config_object['Audio'] = {
-        'mute': False
+        'audio_level': Audio_global
+    }
+    config_object['SFX'] = {
+        'sfx_level': SFX_global
     }
     config_object['Levels'] = {
-        'level': 1
+        'level': Level_global
     }
-
+    print(config_object)
     #save the config file
     with open('config.ini', 'w') as conf:
         config_object.write(conf)
@@ -44,6 +63,42 @@ def reset_config_file_new_user():
 def display_main_menu():
     # Create a Pygame Menu instance
     main_menu = pm.Menu("Main Menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    if os.path.isfile("config.ini") == False:
+        reset_config_file_new_user()
+    #loads the info from the config file
+    config_object = configparser.ConfigParser()
+    config_object.read("config.ini")
+    #if config function exist then update the global variables
+    for section in config_object.sections():
+        if section == "Subtitles":
+            for key in config_object[section]:
+                if key == "subtitles_on":
+                    Subtitles_global = config_object[section][key]
+        elif section == "Font":
+            for key in config_object[section]:
+                if key == "font_id":
+                    Font_global = config_object[section][key]
+        elif section == "Font Size":
+            for key in config_object[section]:
+                if key == "sub_font_size":
+                    Font_size_global = config_object[section][key]
+        elif section == "Font Colour":
+            for key in config_object[section]:
+                if key == "sub_colour":
+                    Font_colour_global = config_object[section][key]
+        elif section == "Audio":
+            for key in config_object[section]:
+                if key == "audio_level":
+                    Audio_global = config_object[section][key]
+        elif section == "SFX":
+            for key in config_object[section]:
+                if key == "sfx_level":
+                    SFX_global = config_object[section][key]
+        elif section == "Levels":
+            for key in config_object[section]:
+                if key == "level":
+                    Level_global = config_object[section][key]
+
 
     # Add buttons to the menu
     main_menu.add.button(title="Play", 
@@ -54,6 +109,7 @@ def display_main_menu():
                         action=pm.events.EXIT, align=pm.locals.ALIGN_CENTER)
     
     print("Printing config file contents:")
+
     #get the data from the config file
     config_object = configparser.ConfigParser()
     config_object.read("config.ini")
@@ -62,31 +118,73 @@ def display_main_menu():
         for key in config_object[section]:
             print(f"{key} : {config_object[section][key]}")
     
-    reset_config_file_new_user()
-    
     main_menu.mainloop(screen)
 
 # display game menu
 def display_game_menu():
     # Create a Pygame Menu instance
-    game_menu = pm.Menu("Settings", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    game_menu = pm.Menu("Game menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+
+    print("at the game menu")
 
     # Add buttons to the menu
     game_menu.add.button(title="Campaign mode", 
-                        action=campaign_mode, align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(0), align=pm.locals.ALIGN_CENTER)
     game_menu.add.button(title="Freestyle mode", 
-                        action=freestyle_mode, align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(1), align=pm.locals.ALIGN_CENTER)
     # Create a back button to return to the main menu
     game_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
     # Start the menu
     game_menu.mainloop(screen)
 
+def next_game():
+    # Create a Pygame Menu instance
+    next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+
+    # Add buttons to the menu
+    next_menu.add.label(title="You have completed the level!", align=pm.locals.ALIGN_CENTER)
+    next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
+    next_menu.add.label(title="You have unlocked the next level!", align=pm.locals.ALIGN_CENTER)
+    #increment the global variable level by one
+    global Level_global 
+    Level_global += 1
+    next_menu.add.button(title="Next Level", 
+                        action=display_game_screen(0), align=pm.locals.ALIGN_CENTER)
+    next_menu.add.button(title="Return To Main Menu", 
+                        action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+    # Start the menu
+    next_menu.mainloop(screen)
+
+def finished_campaign():
+    # Create a Pygame Menu instance
+    next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+
+    # Add buttons to the menu
+    next_menu.add.label(title="You have completed the campaign!", align=pm.locals.ALIGN_CENTER)
+    next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
+    Level_global = 0
+    next_menu.add.button(title="Return To Main Menu", 
+                        action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+    # Start the menu
+    next_menu.mainloop(screen)
 def display_game_screen(gamemode):
+    if gamemode == 0:
+        try:
+            game = Campaign.Campaign(Level_global)
+        except:
+            finished_campaign()
+            return
+    total_rounds = game.get_rounds()
+    current_round = 0
+    finished_current_round = False
+    played = 0
+    computer_played = False
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
     screen.blit(background, (0, 0))
     pygame.display.flip()  # update the screen
+
     # load an image to the screen to the bottom left corner
     image = pygame.image.load("placeholder_sprites\Hands.png")
     screen.blit(image, (0, 500))
@@ -94,11 +192,41 @@ def display_game_screen(gamemode):
     while True:
         for event in pygame.event.get():
             if gamemode == 0:
+                if current_round == total_rounds:
+                    next_game()
+                    return
+                if computer_played == False:
+                    time.sleep(1)
+                    claps = int(game.get_round(current_round))
+
+                    print(claps)
+                    for i in range(claps):
+                        clap()
+                        time.sleep(0.5)
+                    computer_played = True
+
+                if played == claps:
+                    finished_current_round = True
+                if played > claps:
+                    played = 0
+                    current_round = 0
+                    computer_played = False
+                if finished_current_round == True:
+                    current_round += 1
+                    played = 0
+                    finished_current_round = False
+                    computer_played = False
+
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    played += 1
                     clap()
+                    time.sleep(0.5)
                 # when the user clicks the left mouse button play the sound
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    played += 1
                     clap()
+                    time.sleep(0.5)
+                
             if gamemode == 1:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
@@ -129,45 +257,26 @@ def clap():
     pygame.mixer.music.load("placeholder_sounds\clap.wav")
     pygame.mixer.music.play()
 
-
-def campaign_mode():
-    campaign.main()
-    display_game_screen(0)
-    
-    
-    pass
-def freestyle_mode():
-    display_game_screen(1)
-    freestyle.main()
-    pass
-
 #Settings menu logic
 def display_settings_menu():
 
     #Make the settings in config be reset to default
-    def reset_config_file():
-        config_object['Subtitles'] = {
-            'subtitles_on': False
-        }
-        config_object['Font'] = {
-            'font_id': "arial"
-        }
-        config_object['Font Size'] = {
-            'sub_font_size': "medium"
-        }
-        config_object['Font Colour'] = {
-            'sub_colour': "black"
-        }
-        config_object['Audio'] = {
-            'mute': False
-        }
-
-        #save the config file
-        with open('config.ini', 'w') as conf:
-            config_object.write(conf)
-        
+    def reset_settings():
+        Subtitles_global = False
+        Font_global = "arial"
+        Font_size_global = "medium"
+        Font_colour_global = "black"
+        Mute_global = False
+        Audio_global = 0.5
+        SFX_global = 1.0
+        reset_config_file_new_user()   
         display_main_menu()
 
+
+    def reset_level():
+        Level_global = 1
+        reset_config_file_new_user()   
+        display_main_menu()
 
 
     #Function to process the data from the settings menu and update settings menu
@@ -184,28 +293,27 @@ def display_settings_menu():
                 config_object['Subtitles'] = {
                     'subtitles_on': settingsData[key]
                 }
-            
             elif key == "font id":
                 config_object['Font'] = {
-                    'font_id': settingsData[key]
+                    'font_id': settingsData[key][1]
                 }
-            
             elif key == "sub font size":
                 config_object['Font Size'] = {
-                    'sub_font_size': settingsData[key]
+                    'sub_font_size': settingsData[key][1]
                 }
-            
             elif key == "sub colour":
                 config_object['Font Colour'] = {
-                    'sub_colour': settingsData[key]
+                    'sub_colour': settingsData[key][1]
                 }
-            elif key == "mute":
-                config_object['Audio'] = {
-                    'mute': settingsData[key]
-                }
-            elif key == "setting reset":
-                reset_config_file()
-            
+        config_object['Audio'] = {
+            'audio_level': Audio_global
+        }
+        config_object['SFX'] = {
+            'sfx_level': SFX_global
+        }
+        config_object['Levels'] = {
+            'level': Level_global
+        }
 
         #save the config file
         with open('config.ini', 'w') as conf:
@@ -218,7 +326,7 @@ def display_settings_menu():
 
     #Subtitle activation
 
-    settings_menu.add.toggle_switch(title="Subtitles", default=False, toggleswitch_id="subtitles")     
+    settings_menu.add.toggle_switch(title="Subtitles", default=Subtitles_global, toggleswitch_id="subtitles")     
 
     #create the congifparser object for subtitles
     config_object = configparser.ConfigParser()
@@ -228,52 +336,75 @@ def display_settings_menu():
     #Font changes
 
     fonts = [("Arial", "arial"), ("Helvetica Neue", "helvetica"), ("Verdana", "verdana")] 
+    if Font_global == "arial":
+        default_font = 0
+    elif Font_global == "helvetica":
+        default_font = 1
+    elif Font_global == "verdana":
+        default_font = 2
 
-    settings_menu.add.dropselect(title="Select Subtitle Font", items=fonts, dropselect_id="font id", default=0) 
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=fonts, dropselect_id="font id", default=default_font) 
     
     config_object.add_section('Font')
 
     #Font size changes
 
+    if Font_size_global == "small":
+        default_font_size = 0   
+    elif Font_size_global == "medium":
+        default_font_size = 1
+    elif Font_size_global == "large":
+        default_font_size = 2
     font_sizes = [("Small", "small"), ("Medium", "medium"), ("Large", "large")]
 
-    settings_menu.add.selector(title="Subtitle Font size", items=font_sizes, selector_id="sub font size", default=0) 
+    settings_menu.add.selector(title="Subtitle Font size", items=font_sizes, selector_id="sub font size", default=default_font_size) 
 
     config_object.add_section('Font Size')
 
     #Subtitle colour changes
+    if Font_colour_global == "black":
+        default_colour = 0
+    elif Font_colour_global == "white":
+        default_colour = 1
+    elif Font_colour_global == "red":
+        default_colour = 2
+    elif Font_colour_global == "green":
+        default_colour = 3
+    elif Font_colour_global == "blue":
+        default_colour = 4
+    elif Font_colour_global == "cyan":
+        default_colour = 5
 
     subtitle_colours = [("Black", "black"), ("White", "white"), ("Red", "red"), ("Green", "green"), ("Blue", "blue"), ("Cyan", "cyan")]
 
-    settings_menu.add.dropselect(title="Select Subtitle Font", items=subtitle_colours, dropselect_id="sub colour", default=0) 
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=subtitle_colours, dropselect_id="sub colour", default=default_colour) 
 
     config_object.add_section('Font Colour')
 
-    #Audio mute toggle
-
-    settings_menu.add.toggle_switch(title="Mute audio", default=False, toggleswitch_id="mute")  
-
-    config_object.add_section('Audio')
-
     #Reset to default settings
 
-    settings_menu.add.toggle_switch(title="Reset Settings?", default=False, toggleswitch_id="setting reset")
-
-    config_object.add_section('Reset')
+    settings_menu.add.button(title="Reset settings", action=reset_settings, align=pm.locals.ALIGN_CENTER) 
 
     #Reset levels
 
-    settings_menu.add.toggle_switch(title="Reset levels?", default=False, toggleswitch_id="level reset")
+    settings_menu.add.button(title="Reset level", action=reset_level, align=pm.locals.ALIGN_CENTER)
 
-    config_object.add_section('Level Reset')
-    
+
+    def update_audio_level(value):
+        Audio_global= value/100
+
     # Sound Levels
-    settings_menu.add.range_slider("Music", 50, [0, 100], 1)
-    settings_menu.add.range_slider("SFX Volume", 50, [0, 100], 1)
+    config_object.add_section('Audio')
+    settings_menu.add.range_slider("Music", Audio_global*100, [0, 100], 1,onchange=update_audio_level)
+
+    def update_sfx_level(value):
+        SFX_global = value/100
+
+    config_object.add_section('SFX')
+    settings_menu.add.range_slider("SFX Volume", Audio_global*100, [0, 100], 1,onchange=update_sfx_level)
 
     # Create a back button to return to the main menu
-    settings_menu.add.button(title="Return To Main Menu", 
-                        action=processSettingData, align=pm.locals.ALIGN_CENTER) 
+    settings_menu.add.button(title="Return To Main Menu", action=processSettingData, align=pm.locals.ALIGN_CENTER) 
 
     # Start the settings menu
     settings_menu.mainloop(screen)
