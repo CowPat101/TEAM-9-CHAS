@@ -146,7 +146,7 @@ def game_loop():
     exit_loop = False
     go_settings = False
     go_main = False
-    game = gamemode
+    game = False
 
     while running:
         #These for loops look for keyboard inputs for their functions to run
