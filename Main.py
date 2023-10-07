@@ -171,13 +171,13 @@ def finished_campaign(settings):
 def display_game_screen(gamemode, settings):
 
     #Function to display a subtitle to the screen while allowing complete interaction with the game
-    def display():
+    def display(user, message):
         if time.time() - text_start_time < 3:  # Display text for 3 seconds
             #Choose a font and size
             my_font = pygame.font.SysFont('Helvetica Neue', 30) 
 
             # Make the text and text box surfaces
-            text_surface = my_font.render('Some Text', False, (255, 255, 255))  #Change font colour at the end
+            text_surface = my_font.render(f"{user} {message}", False, (255, 255, 255))  #Change font colour at the end
             text_rect = text_surface.get_rect() 
 
             # Create a new surface for the text box (Background colour)
@@ -199,8 +199,6 @@ def display_game_screen(gamemode, settings):
 
             # Blit the text box surface onto the main screen surface
             screen.blit(text_box, text_rect)
-        else:
-            display_text = False
     if gamemode == 0:
         try:
             game = Campaign.Campaign(settings.getLevel())
@@ -230,7 +228,7 @@ def display_game_screen(gamemode, settings):
                 claps = int(game.get_round(current_round))
                 for i in range(claps):
                     text_start_time = time.time()
-                    display()
+                    display("Ringleader", "claps")
                     clap()
                     # make the sprite with image 1
                     comp = Player((window_width / 2, window_height / 2), IMAGE)
@@ -260,6 +258,7 @@ def display_game_screen(gamemode, settings):
         for event in pygame.event.get():
             if gamemode == 0:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    display("Player", "claps")
                     # make the sprite with image 1
                     player = Player((window_width / 2, window_height / 2), IMAGE)
                     # add the sprite to the group
@@ -274,7 +273,7 @@ def display_game_screen(gamemode, settings):
                 # when the user clicks the left mouse button play the sound
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     text_start_time = time.time()
-                    display()
+                    display("Player", "claps")
                     print("mouse clicked")
                     # make the sprite with image 1
                     player = Player((window_width / 2, window_height / 2), IMAGE)
@@ -291,16 +290,22 @@ def display_game_screen(gamemode, settings):
             if gamemode == 1:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
+                        display("Player", "plays sound 1")
                         play_sound(1)
                     if event.key == pygame.K_s:
+                        display("Player", "plays sound 2")
                         play_sound(2)
                     if event.key ==  pygame.K_d:
+                        display("Player", "plays sound 3")
                         play_sound(3)
                     if event.key == pygame.K_f:
+                        display("Player", "plays sound 4")
                         play_sound(4)
                     if event.key == pygame.K_g:
+                        display("Player", "plays sound 5")
                         play_sound(5)
                     if event.key == pygame.K_h:
+                        display("Player", "claps")
                         clap()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 display_main_menu()
