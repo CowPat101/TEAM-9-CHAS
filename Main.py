@@ -172,13 +172,14 @@ def display_game_screen(gamemode, settings):
         try:
             game = Campaign.Campaign(settings.getLevel())
             print(f"level: {settings.getLevel()}")
+            total_rounds = game.get_rounds()
+            current_round = 0
+            played = 0
+            computer_played = False
         except:
             finished_campaign(settings)
             display_main_menu()
-    total_rounds = game.get_rounds()
-    current_round = 0
-    played = 0
-    computer_played = False
+    
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
     # game loop to keep the window open
@@ -221,7 +222,7 @@ def display_game_screen(gamemode, settings):
                 played = 0
                 computer_played = False
             
-            
+
         for event in pygame.event.get():
             if gamemode == 0:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
