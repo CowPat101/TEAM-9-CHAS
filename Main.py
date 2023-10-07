@@ -1,8 +1,8 @@
+import time
 import pygame
 import sys
 import pygame_menu as pm
-import campaign
-import freestyle
+import Campaign
 import configparser
 import os.path
 
@@ -128,11 +128,35 @@ def display_game_menu():
     # Start the menu
     game_menu.mainloop(screen)
 
+def next_game():
+    # Create a Pygame Menu instance
+    next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+
+    # Add buttons to the menu and increments levels_global by one
+    next_menu.add.label(title="You have completed the level!", align=pm.locals.ALIGN_CENTER)
+    next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
+    next_menu.add.label(title="You have unlocked the next level!", align=pm.locals.ALIGN_CENTER)
+    Level_global += 1
+    next_menu.add.button(title="Next Level", 
+                        action=display_game_screen(0), align=pm.locals.ALIGN_CENTER)
+    next_menu.add.button(title="Return To Main Menu", 
+                        action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+    # Start the menu
+    next_menu.mainloop(screen)
+
 def display_game_screen(gamemode):
+    if gamemode == 0:
+        game = Campaign.Campaign(Level_global)
+    total_rounds = game.get_rounds()
+    current_round = 0
+    finished_current_round = False
+    played = 0
+    computer_played = False
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
     screen.blit(background, (0, 0))
     pygame.display.flip()  # update the screen
+
     # load an image to the screen to the bottom left corner
     image = pygame.image.load("placeholder_sprites\Hands.png")
     screen.blit(image, (0, 500))
@@ -140,11 +164,38 @@ def display_game_screen(gamemode):
     while True:
         for event in pygame.event.get():
             if gamemode == 0:
+                if current_round == total_rounds:
+                    next_game()
+                    return
+                claps = int(game.get_round(current_round))
+                if computer_played == False:
+                    for i in range(claps):
+                        clap()
+                        time.sleep(0.5)
+                    computer_played = True
+
+                if played == claps:
+                    finished_current_round = True
+                if played > claps:
+                    played = 0
+                    current_round = 0
+                    computer_played = False
+                if finished_current_round == True:
+                    current_round += 1
+                    played = 0
+                    finished_current_round = False
+                    computer_played = False
+
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    played += 1
                     clap()
+                    time.sleep(0.5)
                 # when the user clicks the left mouse button play the sound
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    played += 1
                     clap()
+                    time.sleep(0.5)
+                
             if gamemode == 1:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
@@ -174,15 +225,6 @@ def play_sound(sound):
 def clap():
     pygame.mixer.music.load("placeholder_sounds\clap.wav")
     pygame.mixer.music.play()
-
-
-def campaign_mode():
-    display_game_screen(0)
-    pass
-def freestyle_mode():
-    freestyle.main()
-    display_game_screen(1)
-    pass
 
 #Settings menu logic
 def display_settings_menu():
