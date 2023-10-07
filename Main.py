@@ -71,6 +71,8 @@ def display_settings_menu():
     settings_menu = pm.Menu("Settings", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
     # Add settings items here (e.g., sliders, checkboxes)
+    settings_menu.add.range_slider("Music", 50, [0, 100], 1)
+    settings_menu.add.range_slider("SFX Volume", 50, [0, 100], 1)
 
     # Create a back button to return to the main menu
     settings_menu.add.button(title="Return To Main Menu", 
