@@ -102,6 +102,7 @@ def display_main_menu():
                         action=pm.events.EXIT, align=pm.locals.ALIGN_CENTER)
     
     print("Printing config file contents:")
+
     #get the data from the config file
     config_object = configparser.ConfigParser()
     config_object.read("config.ini")
@@ -115,13 +116,15 @@ def display_main_menu():
 # display game menu
 def display_game_menu():
     # Create a Pygame Menu instance
-    game_menu = pm.Menu("Settings", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    game_menu = pm.Menu("Game menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+
+    print("at the game menu")
 
     # Add buttons to the menu
     game_menu.add.button(title="Campaign mode", 
-                        action=display_game_screen(0), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(0), align=pm.locals.ALIGN_CENTER)
     game_menu.add.button(title="Freestyle mode", 
-                        action=display_game_screen(1), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(1), align=pm.locals.ALIGN_CENTER)
     # Create a back button to return to the main menu
     game_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
@@ -129,6 +132,9 @@ def display_game_menu():
     game_menu.mainloop(screen)
 
 def display_game_screen(gamemode):
+
+    print("at the game screen")
+    print( "gamemode: " + str(gamemode))
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
     screen.blit(background, (0, 0))
