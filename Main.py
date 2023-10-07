@@ -2,21 +2,13 @@ import pygame
 import sys
 import time
 import pygame_menu as pm
+import colours as cs
 
 pygame.init()
 window_width = 800  # Set your window dimensions
 window_height = 600
 screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("My Game")
- 
-# Standard RGB colors 
-RED = (255, 0, 0) 
-GREEN = (0, 255, 0) 
-BLUE = (0, 0, 255) 
-CYAN = (0, 100, 100) 
-BLACK = (0, 0, 0) 
-WHITE = (255, 255, 255) 
-
 
 #Display Main menu
 
@@ -54,7 +46,7 @@ def display_settings_menu():
 def draw_back_button():
     # Create a new surface for the button
     button = pygame.Surface((100, 50))
-    button.fill((255, 0, 0))  # Fill with red color
+    button.fill(cs.RED)  # Fill with red color
 
     # Get the rectangle of the button surface and set its top left position to (0, 0)
     button_rect = button.get_rect(topleft=(0, 0))
@@ -89,7 +81,7 @@ def game_loop():
             # Create a new surface for the text box (Background colour)
             text_box = pygame.Surface((text_rect.width, text_rect.height))
             text_box.set_alpha(128)  # Set the alpha value of the color to make it transparent
-            text_box.fill((200, 200, 200))  # Fill with light gray color
+            text_box.fill(cs.GREY)  # Fill with light gray color
 
             #Modify the screen alignment of the text box
 
@@ -135,7 +127,7 @@ def game_loop():
         #This loop runs the main game screen - WRITE YOUR GAME CODE IN THIS IF STATEMENT - FOR THE GAME SCREEN            
         if exit_loop == False:
 
-            screen.fill((0, 0, 0))  
+            screen.fill(cs.WHITE)  
 
             #Get the action from the back button on the game screen
             go_back = draw_back_button()
