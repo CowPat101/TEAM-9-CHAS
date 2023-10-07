@@ -50,7 +50,7 @@ def display_game_screen(gamemode):
     screen.blit(background, (0, 0))
     pygame.display.flip()  # update the screen
     # load an image to the screen to the bottom left corner
-    image = pygame.image.load("placeholder_sprites\NotClapping.png")
+    image = pygame.image.load("placeholder_sprites\Hands.png")
     screen.blit(image, (0, 500))
     # game loop to keep the window open
     while True:
@@ -75,10 +75,13 @@ def display_game_screen(gamemode):
                         play_sound(5)
                     if event.key == pygame.K_h:
                         clap()
-
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                return
+                
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        
 
 def play_sound(sound):
     pygame.mixer.music.load(f"placeholder_sounds/beep{sound}.ogg")
