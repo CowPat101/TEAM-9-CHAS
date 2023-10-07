@@ -85,7 +85,6 @@ def play_sound(sound):
 def clap():
     pygame.mixer.music.load("placeholder_sounds\clap.wav")
     pygame.mixer.music.play()
-    print("spacebar pressed")
 
 
 def campaign_mode():
