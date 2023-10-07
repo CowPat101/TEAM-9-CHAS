@@ -3,6 +3,7 @@ import sys
 import pygame_menu as pm
 import campaign
 import freestyle
+import configparser
 
 pygame.mixer.pre_init()
 pygame.init()
@@ -11,8 +12,35 @@ window_height = 600
 screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("My Game")
  
-#Display Main menu
 
+#Reset the config file to default settings for new user
+def reset_config_file_new_user():
+    config_object = configparser.ConfigParser()
+
+    config_object['Subtitles'] = {
+        'subtitles_on': False
+    }
+    config_object['Font'] = {
+        'font_id': "arial"
+    }
+    config_object['Font Size'] = {
+        'sub_font_size': "medium"
+    }
+    config_object['Font Colour'] = {
+        'sub_colour': "black"
+    }
+    config_object['Audio'] = {
+        'mute': False
+    }
+    config_object['Levels'] = {
+        'level': 1
+    }
+
+    #save the config file
+    with open('config.ini', 'w') as conf:
+        config_object.write(conf)
+
+#Display Main menu
 def display_main_menu():
     # Create a Pygame Menu instance
     main_menu = pm.Menu("Main Menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
@@ -24,8 +52,18 @@ def display_main_menu():
                         action=display_settings_menu, align=pm.locals.ALIGN_CENTER)
     main_menu.add.button(title="Quit", 
                         action=pm.events.EXIT, align=pm.locals.ALIGN_CENTER)
-
-    # Start the menu
+    
+    print("Printing config file contents:")
+    #get the data from the config file
+    config_object = configparser.ConfigParser()
+    config_object.read("config.ini")
+    for section in config_object.sections():
+        print(f"[{section}]")
+        for key in config_object[section]:
+            print(f"{key} : {config_object[section][key]}")
+    
+    reset_config_file_new_user()
+    
     main_menu.mainloop(screen)
 
 # display game menu
@@ -105,14 +143,133 @@ def freestyle_mode():
 
 #Settings menu logic
 def display_settings_menu():
+
+    #Make the settings in config be reset to default
+    def reset_config_file():
+        config_object['Subtitles'] = {
+            'subtitles_on': False
+        }
+        config_object['Font'] = {
+            'font_id': "arial"
+        }
+        config_object['Font Size'] = {
+            'sub_font_size': "medium"
+        }
+        config_object['Font Colour'] = {
+            'sub_colour': "black"
+        }
+        config_object['Audio'] = {
+            'mute': False
+        }
+
+        #save the config file
+        with open('config.ini', 'w') as conf:
+            config_object.write(conf)
+        
+        display_main_menu()
+
+
+
+    #Function to process the data from the settings menu and update settings menu
+    def processSettingData():
+        #print the data settings to the console
+        print("\n\n")
+        settingsData = settings_menu.get_input_data() 
+
+        #write the data to the config file
+        for key in settingsData.keys():
+            print(f"{key}\t:\t{settingsData[key]}")
+
+            if key == "subtitles":
+                config_object['Subtitles'] = {
+                    'subtitles_on': settingsData[key]
+                }
+            
+            elif key == "font id":
+                config_object['Font'] = {
+                    'font_id': settingsData[key]
+                }
+            
+            elif key == "sub font size":
+                config_object['Font Size'] = {
+                    'sub_font_size': settingsData[key]
+                }
+            
+            elif key == "sub colour":
+                config_object['Font Colour'] = {
+                    'sub_colour': settingsData[key]
+                }
+            elif key == "mute":
+                config_object['Audio'] = {
+                    'mute': settingsData[key]
+                }
+            elif key == "setting reset":
+                reset_config_file()
+            
+
+        #save the config file
+        with open('config.ini', 'w') as conf:
+            config_object.write(conf)
+        
+        display_main_menu()
+
     # Create a Pygame Menu instance
     settings_menu = pm.Menu("Settings", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
-    # Add settings items here (e.g., sliders, checkboxes)
+    #Subtitle activation
 
+    settings_menu.add.toggle_switch(title="Subtitles", default=False, toggleswitch_id="subtitles")     
+
+    #create the congifparser object for subtitles
+    config_object = configparser.ConfigParser()
+
+    config_object.add_section('Subtitles')
+    
+    #Font changes
+
+    fonts = [("Arial", "arial"), ("Helvetica Neue", "helvetica"), ("Verdana", "verdana")] 
+
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=fonts, dropselect_id="font id", default=0) 
+    
+    config_object.add_section('Font')
+
+    #Font size changes
+
+    font_sizes = [("Small", "small"), ("Medium", "medium"), ("Large", "large")]
+
+    settings_menu.add.selector(title="Subtitle Font size", items=font_sizes, selector_id="sub font size", default=0) 
+
+    config_object.add_section('Font Size')
+
+    #Subtitle colour changes
+
+    subtitle_colours = [("Black", "black"), ("White", "white"), ("Red", "red"), ("Green", "green"), ("Blue", "blue"), ("Cyan", "cyan")]
+
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=subtitle_colours, dropselect_id="sub colour", default=0) 
+
+    config_object.add_section('Font Colour')
+
+    #Audio mute toggle
+
+    settings_menu.add.toggle_switch(title="Mute audio", default=False, toggleswitch_id="mute")  
+
+    config_object.add_section('Audio')
+
+    #Reset to default settings
+
+    settings_menu.add.toggle_switch(title="Reset Settings?", default=False, toggleswitch_id="setting reset")
+
+    config_object.add_section('Reset')
+
+    #Reset levels
+
+    settings_menu.add.toggle_switch(title="Reset levels?", default=False, toggleswitch_id="level reset")
+
+    config_object.add_section('Level Reset')
+    
     # Create a back button to return to the main menu
     settings_menu.add.button(title="Return To Main Menu", 
-                        action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+                        action=processSettingData, align=pm.locals.ALIGN_CENTER) 
 
     # Start the settings menu
     settings_menu.mainloop(screen)
