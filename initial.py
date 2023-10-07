@@ -7,13 +7,16 @@ def quitgame():
     quit()
 
 #gets sounds from source files and loads them into mixer so they can be recalled
-def load_sounds(source_list):
+def load_sounds(source_list, volume=1.0):
     sounds = []
-    
+ 
     for s in source_list:
-        sounds.append(pygame.mixer.Sound(s))
-    
+        sound = pygame.mixer.Sound(s)
+        sound.set_volume(volume)  # Adjust the volume level (0.0 - 1.0)
+        sounds.append(sound)
+ 
     return sounds
+
 
 #contains code that only needs to be executed when running this .py file as standalone program
 def main():
@@ -42,7 +45,8 @@ def game():
     
     pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
     pygame.mixer.music.play(-1) #"-1" plays music indefinitely
-    
+    pygame.mixer.music.set_volume(0.1)  # Adjust the volume level (0.0 - 1.0)
+
     #sets keybindings (again, ideally settings file)
     keybinds = {"s0": pygame.K_a,
                 "s1": pygame.K_s,
