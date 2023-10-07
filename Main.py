@@ -4,6 +4,7 @@ import time
 import pygame_menu as pm
 import colours as cs
 
+pygame.mixer.pre_init() #dark magic to ward away input lag, must be cast before pygame.init()
 pygame.init()
 window_width = 800  # Set your window dimensions
 window_height = 600
@@ -108,6 +109,7 @@ def game_loop():
     exit_loop = False
     go_settings = False
     go_main = False
+    game = False
 
     while running:
         #These for loops look for keyboard inputs for their functions to run
@@ -123,6 +125,9 @@ def game_loop():
                     running = False
                     exit_loop = True
                     go_settings = True
+            else:
+                if game:
+                    game.eventhandler(event)
 
         #This loop runs the main game screen - WRITE YOUR GAME CODE IN THIS IF STATEMENT - FOR THE GAME SCREEN            
         if exit_loop == False:
