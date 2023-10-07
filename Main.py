@@ -4,6 +4,7 @@ import pygame_menu as pm
 import campaign
 import freestyle
 import configparser
+import os.path
 
 pygame.mixer.pre_init()
 pygame.init()
@@ -16,7 +17,8 @@ Subtitles_global = False
 Font_global = "arial"
 Font_size_global = "medium"
 Font_colour_global = "black"
-Mute_global = False
+Audio_global = 0.5
+SFX_global = 1.0
 Level_global = 1
  
 
@@ -37,12 +39,15 @@ def reset_config_file_new_user():
         'sub_colour': Font_colour_global
     }
     config_object['Audio'] = {
-        'mute': Mute_global
+        'audio_level': Audio_global
+    }
+    config_object['SFX'] = {
+        'sfx_level': SFX_global
     }
     config_object['Levels'] = {
         'level': Level_global
     }
-
+    print(config_object)
     #save the config file
     with open('config.ini', 'w') as conf:
         config_object.write(conf)
@@ -51,39 +56,41 @@ def reset_config_file_new_user():
 def display_main_menu():
     # Create a Pygame Menu instance
     main_menu = pm.Menu("Main Menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
-
-    #check if config file exists, if not create it
-    try:
-        config_object = configparser.ConfigParser()
-        config_object.read("config.ini")
-        #if config function exist then update the global variables
-        for section in config_object.sections():
-            if section == "Subtitles":
-                for key in config_object[section]:
-                    if key == "subtitles_on":
-                        Subtitles_global = config_object[section][key]
-            elif section == "Font":
-                for key in config_object[section]:
-                    if key == "font_id":
-                        Font_global = config_object[section][key]
-            elif section == "Font Size":
-                for key in config_object[section]:
-                    if key == "sub_font_size":
-                        Font_size_global = config_object[section][key]
-            elif section == "Font Colour":
-                for key in config_object[section]:
-                    if key == "sub_colour":
-                        Font_colour_global = config_object[section][key]
-            elif section == "Audio":
-                for key in config_object[section]:
-                    if key == "mute":
-                        Mute_global = config_object[section][key]
-            elif section == "Levels":
-                for key in config_object[section]:
-                    if key == "level":
-                        Level_global = config_object[section][key]
-    except:
+    if os.path.isfile("config.ini") == False:
         reset_config_file_new_user()
+    #loads the info from the config file
+    config_object = configparser.ConfigParser()
+    config_object.read("config.ini")
+    #if config function exist then update the global variables
+    for section in config_object.sections():
+        if section == "Subtitles":
+            for key in config_object[section]:
+                if key == "subtitles_on":
+                    Subtitles_global = config_object[section][key]
+        elif section == "Font":
+            for key in config_object[section]:
+                if key == "font_id":
+                    Font_global = config_object[section][key]
+        elif section == "Font Size":
+            for key in config_object[section]:
+                if key == "sub_font_size":
+                    Font_size_global = config_object[section][key]
+        elif section == "Font Colour":
+            for key in config_object[section]:
+                if key == "sub_colour":
+                    Font_colour_global = config_object[section][key]
+        elif section == "Audio":
+            for key in config_object[section]:
+                if key == "audio_level":
+                    Audio_global = config_object[section][key]
+        elif section == "SFX":
+            for key in config_object[section]:
+                if key == "sfx_level":
+                    SFX_global = config_object[section][key]
+        elif section == "Levels":
+            for key in config_object[section]:
+                if key == "level":
+                    Level_global = config_object[section][key]
 
 
     # Add buttons to the menu
@@ -180,48 +187,34 @@ def freestyle_mode():
     freestyle.main()
     pass
 
+#save the config file
+def save_config_file():
+    config_object = configparser.ConfigParser()
+
+
+    with open('config.ini', 'w') as conf:
+        config_object.write(conf)
+
 #Settings menu logic
 def display_settings_menu():
 
     #Make the settings in config be reset to default
     def reset_settings():
-        config_object['Subtitles'] = {
-            'subtitles_on': False
-        }
-        config_object['Font'] = {
-            'font_id': "arial"
-        }
-        config_object['Font Size'] = {
-            'sub_font_size': "medium"
-        }
-        config_object['Font Colour'] = {
-            'sub_colour': "black"
-        }
-        config_object['Audio'] = {
-            'mute': False
-        }
-
-        #save the config file
-        with open('config.ini', 'w') as conf:
-            config_object.write(conf)
-        
+        Subtitles_global = False
+        Font_global = "arial"
+        Font_size_global = "medium"
+        Font_colour_global = "black"
+        Mute_global = False
+        Audio_global = 0.5
+        SFX_global = 1.0
+        reset_config_file_new_user()   
         display_main_menu()
+
 
     def reset_level():
-
-        config_object['Level Reset'] = {
-            'level': 1
-        }
-
-        #save the config file
-        with open('config.ini', 'w') as conf:
-            config_object.write(conf)
-        
+        Level_global = 1
+        reset_config_file_new_user()   
         display_main_menu()
-
-
-
-
 
 
     #Function to process the data from the settings menu and update settings menu
@@ -238,26 +231,27 @@ def display_settings_menu():
                 config_object['Subtitles'] = {
                     'subtitles_on': settingsData[key]
                 }
-            
             elif key == "font id":
                 config_object['Font'] = {
-                    'font_id': settingsData[key]
+                    'font_id': settingsData[key][1]
                 }
-            
             elif key == "sub font size":
                 config_object['Font Size'] = {
-                    'sub_font_size': settingsData[key]
+                    'sub_font_size': settingsData[key][1]
                 }
-            
             elif key == "sub colour":
                 config_object['Font Colour'] = {
-                    'sub_colour': settingsData[key]
+                    'sub_colour': settingsData[key][1]
                 }
-            elif key == "mute":
-                config_object['Audio'] = {
-                    'mute': settingsData[key]
-                }
-         
+        config_object['Audio'] = {
+            'audio_level': Audio_global
+        }
+        config_object['SFX'] = {
+            'sfx_level': SFX_global
+        }
+        config_object['Levels'] = {
+            'level': Level_global
+        }
 
         #save the config file
         with open('config.ini', 'w') as conf:
@@ -270,7 +264,7 @@ def display_settings_menu():
 
     #Subtitle activation
 
-    settings_menu.add.toggle_switch(title="Subtitles", default=False, toggleswitch_id="subtitles")     
+    settings_menu.add.toggle_switch(title="Subtitles", default=Subtitles_global, toggleswitch_id="subtitles")     
 
     #create the congifparser object for subtitles
     config_object = configparser.ConfigParser()
@@ -280,32 +274,50 @@ def display_settings_menu():
     #Font changes
 
     fonts = [("Arial", "arial"), ("Helvetica Neue", "helvetica"), ("Verdana", "verdana")] 
+    if Font_global == "arial":
+        default_font = 0
+    elif Font_global == "helvetica":
+        default_font = 1
+    elif Font_global == "verdana":
+        default_font = 2
 
-    settings_menu.add.dropselect(title="Select Subtitle Font", items=fonts, dropselect_id="font id", default=0) 
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=fonts, dropselect_id="font id", default=default_font) 
     
     config_object.add_section('Font')
 
     #Font size changes
 
+    if Font_size_global == "small":
+        default_font_size = 0   
+    elif Font_size_global == "medium":
+        default_font_size = 1
+    elif Font_size_global == "large":
+        default_font_size = 2
     font_sizes = [("Small", "small"), ("Medium", "medium"), ("Large", "large")]
 
-    settings_menu.add.selector(title="Subtitle Font size", items=font_sizes, selector_id="sub font size", default=0) 
+    settings_menu.add.selector(title="Subtitle Font size", items=font_sizes, selector_id="sub font size", default=default_font_size) 
 
     config_object.add_section('Font Size')
 
     #Subtitle colour changes
+    if Font_colour_global == "black":
+        default_colour = 0
+    elif Font_colour_global == "white":
+        default_colour = 1
+    elif Font_colour_global == "red":
+        default_colour = 2
+    elif Font_colour_global == "green":
+        default_colour = 3
+    elif Font_colour_global == "blue":
+        default_colour = 4
+    elif Font_colour_global == "cyan":
+        default_colour = 5
 
     subtitle_colours = [("Black", "black"), ("White", "white"), ("Red", "red"), ("Green", "green"), ("Blue", "blue"), ("Cyan", "cyan")]
 
-    settings_menu.add.dropselect(title="Select Subtitle Font", items=subtitle_colours, dropselect_id="sub colour", default=0) 
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=subtitle_colours, dropselect_id="sub colour", default=default_colour) 
 
     config_object.add_section('Font Colour')
-
-    #Audio mute toggle
-
-    settings_menu.add.toggle_switch(title="Mute audio", default=False, toggleswitch_id="mute")  
-
-    config_object.add_section('Audio')
 
     #Reset to default settings
 
@@ -313,13 +325,21 @@ def display_settings_menu():
 
     #Reset levels
 
-    settings_menu.add.button(title="Reset settings", action=reset_level, align=pm.locals.ALIGN_CENTER)
+    settings_menu.add.button(title="Reset level", action=reset_level, align=pm.locals.ALIGN_CENTER)
 
-    config_object.add_section('Level Reset')
-    
+
+    def update_audio_level(value):
+        Audio_global= value/100
+
     # Sound Levels
-    settings_menu.add.range_slider("Music", 50, [0, 100], 1)
-    settings_menu.add.range_slider("SFX Volume", 50, [0, 100], 1)
+    config_object.add_section('Audio')
+    settings_menu.add.range_slider("Music", Audio_global*100, [0, 100], 1,onchange=update_audio_level)
+
+    def update_sfx_level(value):
+        SFX_global = value/100
+
+    config_object.add_section('SFX')
+    settings_menu.add.range_slider("SFX Volume", Audio_global*100, [0, 100], 1,onchange=update_sfx_level)
 
     # Create a back button to return to the main menu
     settings_menu.add.button(title="Return To Main Menu", action=processSettingData, align=pm.locals.ALIGN_CENTER) 
