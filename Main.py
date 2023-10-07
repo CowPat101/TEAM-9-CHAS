@@ -26,15 +26,43 @@ global SFX_global
 SFX_global = 1.0
 global Level_global
 Level_global = 1
- 
+
 IMAGE = pygame.image.load("placeholder_sprites\hands.png").convert_alpha()
 IMAGE2 = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, pos, image):
+    def __init__(self, pos, initial_image, image_list):
         super().__init__()
-        self.image = image
+        self.image = initial_image
         self.rect = self.image.get_rect(center=pos)
+        self.onscreen = False
+        self.image_list = image_list #[transparent, (1st image, frames displayed), (2nd image, time displayed), ...]
+
+    def hide(self):
+        self.remove()
+        self.onscreen = False
+    
+    def clap(self, group):
+        if not self.onscreen:
+            self.add(group)
+            self.onscreen = 1
+            self.image_number = 0
+            self.image = self.image_list[0][0]
+            self.frame_count = self.image_list[0][1]
+        else:
+            pass
+    
+    def update(self):
+        self.onscreen += 1
+        if self.onscreen >= self.frame_count:
+            self.onscreen = 1
+            self.image_number += 1
+            try:
+                self.image = self.image_list[image_number]
+            except IndexError:
+                self.onscreen = False
+                self.hide()
+
 
 #Reset the config file to default settings for new user
 def reset_config_file_new_user():
@@ -177,26 +205,45 @@ def finished_campaign():
     # Start the menu
     next_menu.mainloop(screen)
 def display_game_screen(gamemode):
+    
+    from gamemode import Clapper
+    
+    """
     if gamemode == 0:
         try:
             game = Campaign.Campaign(Level_global)
         except:
             finished_campaign()
             return
-    total_rounds = game.get_rounds()
+    """
+    if gamemode == 0:
+        game = Clapper()
+    
+    #total_rounds = game.get_rounds()
     current_round = 0
     played = 0
     computer_played = False
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
+    Clapper.player_sprite = Player((window_width / 2, window_height / 2), IMAGE2, [(IMAGE, 5), (IMAGE2, 10)])
+    onscreen = pygame.sprite.Group(Clapper.player_sprite)
+    
     # game loop to keep the window open
     while True:
         #clear the screen
-
         screen.blit(background, (0, 0))
+        onscreen.draw(screen)
         pygame.display.flip()  # update the screen
         for event in pygame.event.get():
-            if gamemode == 0:
+            game.eventhandler(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+        
+        game.game_logic()
+
+
+
+        """if gamemode == 0:
                 
                 if current_round == total_rounds:
                     next_game()
@@ -250,28 +297,31 @@ def display_game_screen(gamemode):
                     player_group = pygame.sprite.Group(player)
                     # draw the sprite
                     player_group.draw(screen)
-                    pygame.display.flip()  # update the screen  
-                    
-            if gamemode == 1:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_a:
-                        play_sound(1)
-                    if event.key == pygame.K_s:
-                        play_sound(2)
-                    if event.key ==  pygame.K_d:
-                        play_sound(3)
-                    if event.key == pygame.K_f:
-                        play_sound(4)
-                    if event.key == pygame.K_g:
-                        play_sound(5)
-                    if event.key == pygame.K_h:
-                        clap()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return
+                    pygame.display.flip()  # update the screen                      
             
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+        if gamemode == 1:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    play_sound(1)
+                if event.key == pygame.K_s:
+                    play_sound(2)
+                if event.key ==  pygame.K_d:
+                    play_sound(3)
+                if event.key == pygame.K_f:
+                    play_sound(4)
+                if event.key == pygame.K_g:
+                    play_sound(5)
+                if event.key == pygame.K_h:
+                    clap()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            return
+        
+            
+        
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        """
         
 
 def play_sound(sound):
