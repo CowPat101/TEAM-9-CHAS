@@ -49,7 +49,9 @@ def display_game_screen(gamemode):
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
     screen.blit(background, (0, 0))
     pygame.display.flip()  # update the screen
-
+    # load an image to the screen to the bottom left corner
+    image = pygame.image.load("placeholder_sprites\NotClapping.png")
+    screen.blit(image, (0, 500))
     # game loop to keep the window open
     while True:
         for event in pygame.event.get():
