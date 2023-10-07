@@ -11,7 +11,41 @@ class Game:
     def set_keybinds(self, keybinds):
         self.keybinds = keybinds
 
-    
+class Freestyle(Game):
+    def __init__(self):
+        Game.__init__(self)
+
+        #load sounds
+        sounds = {"sound_1": {"source":"placeholder_sounds/beep1.ogg", "volume": 1,},
+              "sound_2": {"source":"placeholder_sounds/beep2.ogg", "volume": 1,},
+              "sound_3": {"source":"placeholder_sounds/beep3.ogg", "volume": 1,},
+              "sound_4": {"source":"placeholder_sounds/beep4.ogg", "volume": 1,},  
+              "sound_5": {"source":"placeholder_sounds/beep5.ogg", "volume": 1,}}
+        self.set_sounds(sounds)
+
+        #load keybindings
+        keybinds = {"s0": pygame.K_a,
+                "s1": pygame.K_s,
+                "s2": pygame.K_d,
+                "s3": pygame.K_f,
+                "s4": pygame.K_g,
+                "pause": pygame.K_p,
+                }
+        self.set_keybinds(keybinds)
+
+    def eventhandler(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == self.keybinds["s0"]:
+                pygame.mixer.Sound.play(self.sounds["sound_1"])
+            if event.key == self.keybinds["s1"]:
+                pygame.mixer.Sound.play(self.sounds["sound_2"])
+            if event.key == self.keybinds["s2"]:
+                pygame.mixer.Sound.play(self.sounds["sound_3"])
+            if event.key == self.keybinds["s3"]:
+                pygame.mixer.Sound.play(self.sounds["sound_4"])
+            if event.key == self.keybinds["s4"]:
+                pygame.mixer.Sound.play(self.sounds["sound_5"])
+
 
 def main():
 
