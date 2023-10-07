@@ -180,6 +180,7 @@ def display_game_screen(gamemode):
                     next_game()
                     return
                 if computer_played == False:
+                    time.sleep(1)
                     claps = int(game.get_round(current_round))
 
                     print(claps)
