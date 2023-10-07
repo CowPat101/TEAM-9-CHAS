@@ -156,9 +156,25 @@ def next_game():
     # Start the menu
     next_menu.mainloop(screen)
 
+def finished_campaign():
+    # Create a Pygame Menu instance
+    next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+
+    # Add buttons to the menu
+    next_menu.add.label(title="You have completed the campaign!", align=pm.locals.ALIGN_CENTER)
+    next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
+    Level_global = 0
+    next_menu.add.button(title="Return To Main Menu", 
+                        action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+    # Start the menu
+    next_menu.mainloop(screen)
 def display_game_screen(gamemode):
     if gamemode == 0:
-        game = Campaign.Campaign(Level_global)
+        try:
+            game = Campaign.Campaign(Level_global)
+        except:
+            finished_campaign()
+            return
     total_rounds = game.get_rounds()
     current_round = 0
     finished_current_round = False
