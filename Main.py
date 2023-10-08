@@ -406,7 +406,7 @@ def display_settings_menu(settings):
 
     #Make the settings in config be reset to default
     def reset_settings():
-        resetSettings = Settings.Settings(False, 0, 1, 0, 0.5, 1.0, 1)
+        resetSettings = Settings.Settings(False, 0, 1, 0, 0.5, 1.0, settings.getLevel())
         reset_config_file_new_user(resetSettings)   
         display_main_menu()
 
