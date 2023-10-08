@@ -11,6 +11,12 @@ FONT_SIZE_OPTIONS = [("Small", "small", 30), ("Medium", "medium", 40), ("Large",
 FONT_COLOR_OPTIONS = [("Black", "black"), ("White", "white"), ("Red", "red"), ("Green", "green"), ("Blue", "blue"), ("Cyan", "cyan")]
 
 
+# fixes all files acessed for pyinstaller
+def resource_path(relative_path):
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+
 RED = (255, 0, 0)
 CYAN = (0, 100, 100)    
 WHITE = (255, 255, 255)
@@ -300,7 +306,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                 # Blit the text box surface onto the main screen surface
                 screen.blit(text_box, text_rect)
 
-    pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
+    pygame.mixer.music.load(resource_path("placeholder_sounds/simple-loop.ogg")) #sets music
     pygame.mixer.music.play(-1) #"-1" plays music indefinitely
     pygame.mixer.music.set_volume(1*settings.getAudio())  # Adjust the volume level (0.0 - 1.0)
       # Adjust the volume level (0.0 - 1.0)
@@ -319,14 +325,14 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
             finished_campaign(settings)
             display_main_menu(screen, window_width, window_height)
     
-    clap_x = pygame.mixer.Sound("placeholder_sounds/clap.ogg")
-    s1 = pygame.mixer.Sound("placeholder_sounds/piano-a.ogg")
-    s2 = pygame.mixer.Sound("placeholder_sounds/piano-b.ogg")
-    s3 = pygame.mixer.Sound("placeholder_sounds/piano-c.ogg")
-    s4 = pygame.mixer.Sound("placeholder_sounds/piano-d.ogg")
-    s5 = pygame.mixer.Sound("placeholder_sounds/piano-e.ogg")
-    s6 = pygame.mixer.Sound("placeholder_sounds/piano-f.ogg")
-    s7 = pygame.mixer.Sound("placeholder_sounds/piano-g.ogg")
+    clap_x = pygame.mixer.Sound(resource_path("placeholder_sounds/clap.ogg"))
+    s1 = pygame.mixer.Sound(resource_path("placeholder_sounds/piano-a.ogg"))
+    s2 = pygame.mixer.Sound(resource_path("placeholder_sounds/piano-b.ogg"))
+    s3 = pygame.mixer.Sound(resource_path("placeholder_sounds/piano-c.ogg"))
+    s4 = pygame.mixer.Sound(resource_path("placeholder_sounds/piano-d.ogg"))
+    s5 = pygame.mixer.Sound(resource_path("placeholder_sounds/piano-e.ogg"))
+    s6 = pygame.mixer.Sound(resource_path("placeholder_sounds/piano-f.ogg"))
+    s7 = pygame.mixer.Sound(resource_path("placeholder_sounds/piano-g.ogg"))
 
     #set volume of sounds
     s1.set_volume(1*settings.getSFX())
@@ -340,23 +346,23 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
 
     # load background image to the screen
 
-    background = pygame.image.load("placeholder_sprites/background.jpeg")
-    clap_image= pygame.image.load("placeholder_sprites/Clapping.png").convert_alpha()
-    piano_image_blank = pygame.image.load("placeholder_sprites/keyboards/Keyboard-blank.png").convert_alpha()
+    background = pygame.image.load(resource_path("placeholder_sprites/background.jpeg"))
+    clap_image= pygame.image.load(resource_path("placeholder_sprites/Clapping.png")).convert_alpha()
+    piano_image_blank = pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-blank.png")).convert_alpha()
     piano_image_blank = pygame.transform.scale(piano_image_blank, (int(piano_image_blank.get_width() * 0.75), int(piano_image_blank.get_height() * 0.75)))
-    piano_imageA= pygame.image.load("placeholder_sprites/keyboards/Keyboard-A.png").convert_alpha()
+    piano_imageA= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-A.png")).convert_alpha()
     piano_imageA = pygame.transform.scale(piano_imageA, (int(piano_imageA.get_width() * 0.75), int(piano_imageA.get_height() * 0.75)))
-    piano_imageB= pygame.image.load("placeholder_sprites/keyboards/Keyboard-B.png").convert_alpha()
+    piano_imageB= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-B.png")).convert_alpha()
     piano_imageB = pygame.transform.scale(piano_imageB, (int(piano_imageB.get_width() * 0.75), int(piano_imageB.get_height() * 0.75)))
-    piano_imageC= pygame.image.load("placeholder_sprites/keyboards/Keyboard-C.png").convert_alpha()
+    piano_imageC= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-C.png")).convert_alpha()
     piano_imageC = pygame.transform.scale(piano_imageC, (int(piano_imageC.get_width() * 0.75), int(piano_imageC.get_height() * 0.75)))
-    piano_imageD= pygame.image.load("placeholder_sprites/keyboards/Keyboard-D.png").convert_alpha()
+    piano_imageD= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-D.png")).convert_alpha()
     piano_imageD = pygame.transform.scale(piano_imageD, (int(piano_imageD.get_width() * 0.75), int(piano_imageD.get_height() * 0.75)))
-    piano_imageE= pygame.image.load("placeholder_sprites/keyboards/Keyboard-E.png").convert_alpha()
+    piano_imageE= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-E.png")).convert_alpha()
     piano_imageE = pygame.transform.scale(piano_imageE, (int(piano_imageE.get_width() * 0.75), int(piano_imageE.get_height() * 0.75)))
-    piano_imageF= pygame.image.load("placeholder_sprites/keyboards/Keyboard-F.png").convert_alpha()
+    piano_imageF= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-F.png")).convert_alpha()
     piano_imageF = pygame.transform.scale(piano_imageF, (int(piano_imageF.get_width() * 0.75), int(piano_imageF.get_height() * 0.75)))
-    piano_imageG= pygame.image.load("placeholder_sprites/keyboards/Keyboard-G.png").convert_alpha()
+    piano_imageG= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-G.png")).convert_alpha()
     piano_imageG = pygame.transform.scale(piano_imageG, (int(piano_imageG.get_width() * 0.75), int(piano_imageG.get_height() * 0.75)))
 
     # game loop to keep the window open
