@@ -367,10 +367,32 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     piano_imageG= pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-G.png")).convert_alpha()
     piano_imageG = pygame.transform.scale(piano_imageG, (int(piano_imageG.get_width() * 0.75), int(piano_imageG.get_height() * 0.75)))
 
+    # Define the button rectangle
+    button_rect = pygame.Rect(10, 10, 100, 50)
+
+    # Define the button text
+    button_font = pygame.font.SysFont(FONT_OPTIONS[settings.getFont()], FONT_SIZE_OPTIONS[settings.getFontSize()][2])
+    if settings.getFontColour() == 0:
+        font_default_colour = BLACK
+    elif settings.getFontColour() == 1:
+        font_default_colour = WHITE
+    elif settings.getFontColour() == 2:
+        font_default_colour = RED
+    elif settings.getFontColour() == 3:
+        font_default_colour = GREEN
+    elif settings.getFontColour() == 4:
+        font_default_colour = BLUE
+    elif settings.getFontColour() == 5:
+        font_default_colour = CYAN
+    button_text = button_font.render("Return", True, font_default_colour)
+
+
     # game loop to keep the window open
     while True:
         #clear the screen
         screen.blit(background, (0, 0))
+        pygame.draw.rect(screen, GREY, button_rect)
+        screen.blit(button_text, button_rect.move(5, 5))
         if gamemode == 1:
             blank = Player((window_width / 2, window_height / 2), piano_image_blank)
             # add the sprite to the group
@@ -400,6 +422,8 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                     pygame.time.delay(500)
                     # the sprite with image deletes itself
                     screen.blit(background, (0, 0))
+                    pygame.draw.rect(screen, GREY, button_rect)
+                    screen.blit(button_text, button_rect.move(5, 5))
                     pygame.display.flip()  
                     pygame.time.delay(500)
                     print(f"clap {i} of {claps}" )
@@ -535,8 +559,10 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.mixer.music.stop()
                 display_main_menu(screen, window_width, window_height)
-            
-            if event.type == pygame.QUIT:
+            elif button_rect.collidepoint(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.mixer.music.stop()
+                display_main_menu(screen, window_width, window_height)
+            elif event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()       
 
