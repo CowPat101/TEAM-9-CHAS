@@ -8,15 +8,33 @@ import Settings
 import time
 import colours
 
-pygame.mixer.pre_init()
-pygame.init()
-window_width = 800  # Set your window dimensions
-window_height = 600
-screen = pygame.display.set_mode((window_width, window_height))
-pygame.display.set_caption("My Game")
-clap_x = pygame.mixer.Sound("placeholder_sounds\clap.ogg")
 
-IMAGE = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
+
+
+# Constants for font and font size options
+FONT_OPTIONS = [("Arial", "arial"), ("Helvetica Neue", "helvetica"), ("Verdana", "verdana")]
+FONT_SIZE_OPTIONS = [("Small", "small"), ("Medium", "medium"), ("Large", "large")]
+
+# Constants for font color options
+FONT_COLOR_OPTIONS = [("Black", "black"), ("White", "white"), ("Red", "red"), ("Green", "green"), ("Blue", "blue"), ("Cyan", "cyan")]
+
+def initialize_pygame():
+    pygame.mixer.pre_init()
+    pygame.init()
+    window_width = 800
+    window_height = 600
+    screen = pygame.display.set_mode((window_width, window_height))
+    
+    pygame.display.set_caption("My Game")
+    return screen, window_width, window_height
+
+def load_sound(filename, volume):
+    sound = pygame.mixer.Sound(filename)
+    sound.set_volume(volume)
+    return sound
+
+
+
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, pos, image):
@@ -55,7 +73,7 @@ def reset_config_file_new_user(settings):
         config_object.write(conf)
 
 #Display Main menu
-def display_main_menu():
+def display_main_menu(screen, window_width, window_height):
     settings = Settings.Settings(False, 0, 1, 0, 0.5, 1.0, 1)
 
     # Create a Pygame Menu instance
@@ -99,9 +117,9 @@ def display_main_menu():
 
     # Add buttons to the menu
     main_menu.add.button(title="Play", 
-                        action=lambda: display_game_menu(settings), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_menu(settings, screen, window_width, window_height), align=pm.locals.ALIGN_CENTER)
     main_menu.add.button(title="Settings", 
-                        action=lambda: display_settings_menu(settings), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_settings_menu(settings, screen, window_width, window_height), align=pm.locals.ALIGN_CENTER)
     main_menu.add.button(title="Quit", 
                         action=pm.events.EXIT, align=pm.locals.ALIGN_CENTER)
     
@@ -117,8 +135,12 @@ def display_main_menu():
     
     main_menu.mainloop(screen)
 
+
+
+
+
 # display game menu
-def display_game_menu(settings):
+def display_game_menu(settings, screen, window_width, window_height):
     pygame.mixer.music.stop()
     # Create a Pygame Menu instance
     game_menu = pm.Menu("Game menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
@@ -127,16 +149,16 @@ def display_game_menu(settings):
 
     # Add buttons to the menu
     game_menu.add.button(title="Campaign mode", 
-                        action=lambda: display_game_screen(0, settings), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(0, settings, screen, window_width, window_height), align=pm.locals.ALIGN_CENTER)
     game_menu.add.button(title="Freestyle mode", 
-                        action=lambda: display_game_screen(1, settings), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(1, settings, screen, window_width, window_height), align=pm.locals.ALIGN_CENTER)
     # Create a back button to return to the main menu
     game_menu.add.button(title="Return To Main Menu", 
                         action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
     # Start the menu
     game_menu.mainloop(screen)
 
-def next_game(settings):
+def next_game(settings, screen, window_width, window_height):
     # Create a Pygame Menu instance
     next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
@@ -149,14 +171,14 @@ def next_game(settings):
     settings.setLevel(settings.getLevel()+1)
     reset_config_file_new_user(newSetting)
     next_menu.add.button(title="Next Level", 
-                        action=lambda: display_game_screen(0,settings), align=pm.locals.ALIGN_CENTER)
+                        action=lambda: display_game_screen(0,settings,screen, window_width, window_height), align=pm.locals.ALIGN_CENTER)
     next_menu.add.button(title="Return To Main Menu", 
-                        action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+                        action=lambda: display_main_menu(screen, window_width, window_height), align=pm.locals.ALIGN_CENTER) 
     print("next level")
     # Start the menu
     next_menu.mainloop(screen)
 
-def finished_campaign(settings):
+def finished_campaign(settings, screen, window_width, window_height):
     # Create a Pygame Menu instance
     next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
@@ -166,14 +188,12 @@ def finished_campaign(settings):
     newSetting = Settings.Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(),1)
     reset_config_file_new_user(newSetting)
     next_menu.add.button(title="Return To Main Menu", 
-                        action=display_main_menu, align=pm.locals.ALIGN_CENTER) 
+                        action=lambda: display_main_menu(screen, window_width, window_height), align=pm.locals.ALIGN_CENTER) 
     # Start the menu
     next_menu.mainloop(screen)
 
 
-def display_game_screen(gamemode, settings):
-
-
+def display_game_screen(gamemode, settings, screen, window_width, window_height):
     #Function to display a subtitle to the screen while allowing complete interaction with the game
     def display(user, message):
         if settings.getSubtitles() == True:
@@ -251,9 +271,9 @@ def display_game_screen(gamemode, settings):
             pygame.mixer.music.stop()
             pygame.mixer.music.set_volume(0)
             finished_campaign(settings)
-            display_main_menu()
+            display_main_menu(screen, window_width, window_height)
     
-    
+    clap_x = pygame.mixer.Sound("placeholder_sounds\clap.ogg")
     s1 = pygame.mixer.Sound("placeholder_sounds/piano-a.ogg")
     s2 = pygame.mixer.Sound("placeholder_sounds/piano-b.ogg")
     s3 = pygame.mixer.Sound("placeholder_sounds/piano-c.ogg")
@@ -274,7 +294,7 @@ def display_game_screen(gamemode, settings):
 
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
-
+    image = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
     # game loop to keep the window open
     while True:
         #clear the screen
@@ -292,9 +312,9 @@ def display_game_screen(gamemode, settings):
                 for i in range(claps):
                     text_start_time = time.time()
                     display("Ringleader", "claps")
-                    clap()
+                    pygame.mixer.Sound.play(clap_x)
                     # make the sprite with image 1
-                    comp = Player((window_width / 2, window_height / 2), IMAGE)
+                    comp = Player((window_width / 2, window_height / 2), image)
                     # add the sprite to the group
                     comp_group = pygame.sprite.Group(comp)
                     # draw the sprite
@@ -324,14 +344,14 @@ def display_game_screen(gamemode, settings):
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     display("Player", "claps")
                     # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), IMAGE)
+                    player = Player((window_width / 2, window_height / 2), image)
                     # add the sprite to the group
                     player_group = pygame.sprite.Group(player)
                     # draw the sprite
                     player_group.draw(screen)
                     pygame.display.flip()  # update the screen
                     played += 1
-                    clap()
+                    pygame.mixer.Sound.play(clap_x)
                     pygame.time.delay(250)  
                     print(f"played {played} of {claps}")                  
                 # when the user clicks the left mouse button play the sound
@@ -339,14 +359,14 @@ def display_game_screen(gamemode, settings):
                     display("Player", "claps")
                     print("mouse clicked")
                     # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), IMAGE)
+                    player = Player((window_width / 2, window_height / 2), image)
                     # add the sprite to the group
                     player_group = pygame.sprite.Group(player)
                     # draw the sprite
                     player_group.draw(screen)
                     pygame.display.flip()  # update the screen
                     played += 1
-                    clap()
+                    pygame.mixer.Sound.play(clap_x)
                     pygame.time.delay(250)      
                     print(f"played {played} of {claps}")
       
@@ -391,27 +411,24 @@ def display_game_screen(gamemode, settings):
                         display("Player", "claps")
                         print("mouse clicked")
                         # make the sprite with image 1
-                        player = Player((window_width / 2, window_height / 2), IMAGE)
+                        player = Player((window_width / 2, window_height / 2), image)
                         # add the sprite to the group
                         player_group = pygame.sprite.Group(player)
                         # draw the sprite
                         player_group.draw(screen)
                         pygame.display.flip()  # update the screen
-                        clap()
+                        pygame.mixer.Sound.play(clap_x)
                         pygame.time.delay(250)      
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.mixer.music.stop()
-                display_main_menu()
+                display_main_menu(screen, window_width, window_height)
             
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()       
 
-def clap():
-    pygame.mixer.Sound.play(clap_x)
-
 #Settings menu logic
-def display_settings_menu(settings):
+def display_settings_menu(settings, screen, window_width, window_height):
 
     #Make the settings in config be reset to default
     def reset_settings():
@@ -466,38 +483,31 @@ def display_settings_menu(settings):
         with open('config.ini', 'w') as conf:
             config_object.write(conf)
         
-        display_main_menu()
+        display_main_menu(screen, window_width, window_height)
 
     # Create a Pygame Menu instance
     settings_menu = pm.Menu("Settings", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
+    config_object = configparser.ConfigParser()
     #Subtitle activation
 
     settings_menu.add.toggle_switch(title="Subtitles", default=settings.getSubtitles(), toggleswitch_id="subtitles")     
 
     #create the congifparser object for subtitles
-    config_object = configparser.ConfigParser()
 
     config_object.add_section('Subtitles')
     
-    #Font changes
-
-    fonts = [("Arial", "arial"), ("Helvetica Neue", "helvetica"), ("Verdana", "verdana")] 
-
-    settings_menu.add.dropselect(title="Select Subtitle Font", items=fonts, dropselect_id="font id", default=settings.getFont()) 
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=FONT_OPTIONS, dropselect_id="font id", default=settings.getFont()) 
     
     config_object.add_section('Font')
 
-    #Font size changes
-    font_sizes = [("Small", "small"), ("Medium", "medium"), ("Large", "large")]
-
-    settings_menu.add.selector(title="Subtitle Font size", items=font_sizes, selector_id="sub font size", default=settings.getFontSize()) 
+    settings_menu.add.selector(title="Subtitle Font size", items=FONT_SIZE_OPTIONS, selector_id="sub font size", default=settings.getFontSize()) 
 
     config_object.add_section('Font Size')
 
     subtitle_colours = [("Black", "black"), ("White", "white"), ("Red", "red"), ("Green", "green"), ("Blue", "blue"), ("Cyan", "cyan")]
 
-    settings_menu.add.dropselect(title="Select Subtitle Font", items=subtitle_colours, dropselect_id="sub colour", default=settings.getFontColour()) 
+    settings_menu.add.dropselect(title="Select Subtitle Font", items=FONT_COLOR_OPTIONS, dropselect_id="sub colour", default=settings.getFontColour()) 
 
     config_object.add_section('Font Colour')
 
@@ -518,7 +528,7 @@ def display_settings_menu(settings):
     settings_menu.add.range_slider("Music", settings.getAudio()*100, [0, 100], 1,onchange=update_audio_level)
 
     def update_sfx_level(value):
-        SFX_global = value/100
+        settings.setSFX(value/100)
 
     config_object.add_section('SFX')
     settings_menu.add.range_slider("SFX Volume", settings.getSFX()*100, [0, 100], 1,onchange=update_sfx_level)
@@ -529,25 +539,6 @@ def display_settings_menu(settings):
     # Start the settings menu
     settings_menu.mainloop(screen)
 
-#Back button to go to the main menu
-def draw_back_button():
-    # Create a new surface for the button
-    button = pygame.Surface((100, 50))
-    button.fill((255, 0, 0))  # Fill with red color
-
-    # Get the rectangle of the button surface and set its top left position to (0, 0)
-    button_rect = button.get_rect(topleft=(0, 0))
-
-    # Blit the button surface onto the main screen surface
-    screen.blit(button, button_rect)
-
-    # Check if the button has been clicked
-    mouse_pos = pygame.mouse.get_pos()
-    if button_rect.collidepoint(mouse_pos):
-        if pygame.mouse.get_pressed()[0]:
-            go_back = True
-            return go_back   
-
-
 if __name__ == "__main__":
-    display_main_menu()
+    screen, window_width, window_height = initialize_pygame()
+    display_main_menu(screen, window_width, window_height)
