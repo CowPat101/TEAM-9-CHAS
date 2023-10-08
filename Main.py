@@ -237,6 +237,7 @@ def display_game_screen(gamemode, settings):
     pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
     pygame.mixer.music.play(-1) #"-1" plays music indefinitely
     pygame.mixer.music.set_volume(1*settings.getAudio())  # Adjust the volume level (0.0 - 1.0)
+      # Adjust the volume level (0.0 - 1.0)
 
     if gamemode == 0:
         try:
@@ -248,14 +249,24 @@ def display_game_screen(gamemode, settings):
             computer_played = False
         except:
             pygame.mixer.music.stop()
+            pygame.mixer.music.set_volume(0)
             finished_campaign(settings)
             display_main_menu()
+    
     
     s1 = pygame.mixer.Sound("placeholder_sounds/beep1.ogg")
     s2 = pygame.mixer.Sound("placeholder_sounds/beep2.ogg")
     s3 = pygame.mixer.Sound("placeholder_sounds/beep3.ogg")
     s4 = pygame.mixer.Sound("placeholder_sounds/beep4.ogg")
     s5 = pygame.mixer.Sound("placeholder_sounds/beep5.ogg")
+
+    #set volume of sounds
+    s1.set_volume(1*settings.getSFX())
+    s2.set_volume(1*settings.getSFX())
+    s3.set_volume(1*settings.getSFX())
+    s4.set_volume(1*settings.getSFX())
+    s5.set_volume(1*settings.getSFX())
+    clap_x.set_volume(1*settings.getSFX())
 
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
@@ -268,6 +279,7 @@ def display_game_screen(gamemode, settings):
         pygame.display.flip()  # update the screen
         if gamemode == 0:
             if current_round == total_rounds:
+                pygame.mixer.music.set_volume(0)
                 next_game(settings)
                 return
             if computer_played == False:
