@@ -81,6 +81,7 @@ class Settings():
 
 def initialize_pygame():
     pygame.mixer.pre_init()
+    pygame.mixer.init()
     pygame.init()
     window_width = 800
     window_height = 600
@@ -478,13 +479,13 @@ def display_settings_menu(settings, screen, window_width, window_height):
     def reset_settings():
         resetSettings = Settings(False, 0, 1, 0, 0.5, 1.0, settings.getLevel())
         reset_config_file_new_user(resetSettings)   
-        display_main_menu()
+        display_main_menu(screen, window_width, window_height)
 
 
     def reset_level():
         resetSetting = Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(), 1)
         reset_config_file_new_user(resetSetting)   
-        display_main_menu()
+        display_main_menu(screen, window_width, window_height)
 
 
     #Function to process the data from the settings menu and update settings menu
