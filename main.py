@@ -516,13 +516,14 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     # Define the button rectangle
     button_rect = pygame.Rect(10, 10, 100, 50)
 
-    key_rectA = pygame.Rect(96, 91, 82, 360)
-    key_rectB = pygame.Rect(178, 91, 82, 360)
-    key_rectC = pygame.Rect(260, 91, 82, 360)
-    key_rectD = pygame.Rect(342, 91, 82, 360)
-    key_rectE = pygame.Rect(424, 91, 82, 360)
-    key_rectF = pygame.Rect(506, 91, 82, 360)
-    key_rectG = pygame.Rect(588, 91, 82, 360)
+    key_rectA = pygame.Rect(96, 92, 82, 347)
+    key_rectB = pygame.Rect(184, 92, 82, 347)
+    key_rectC = pygame.Rect(272, 92, 82, 347)
+    key_rectD = pygame.Rect(360, 92, 82, 347)
+    key_rectE = pygame.Rect(448, 92, 82, 347)
+    key_rectF = pygame.Rect(536, 92, 82, 347)
+    key_rectG = pygame.Rect(624, 92, 82, 347)
+
 
     # Define the button text
     button_font = pygame.font.SysFont("Helvetica Neue", 40)
