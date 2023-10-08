@@ -6,6 +6,7 @@ import configparser
 import os.path
 import Settings
 import time
+import colours
 
 pygame.mixer.pre_init()
 pygame.init()
@@ -56,7 +57,6 @@ def reset_config_file_new_user(settings):
 #Display Main menu
 def display_main_menu():
     settings = Settings.Settings(False, 0, 1, 0, 0.5, 1.0, 1)
-
 
     # Create a Pygame Menu instance
     main_menu = pm.Menu("Main Menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
@@ -178,33 +178,63 @@ def display_game_screen(gamemode, settings):
 
     #Function to display a subtitle to the screen while allowing complete interaction with the game
     def display(user, message):
-        if time.time() - text_start_time < 3:  # Display text for 3 seconds
-            #Choose a font and size
-            my_font = pygame.font.SysFont('Helvetica Neue', 30) 
+        if settings.getSubtitles() == True:
+            if time.time() - text_start_time < 3:  # Display text for 3 seconds
 
-            # Make the text and text box surfaces
-            text_surface = my_font.render(f"{user} {message}", False, (255, 255, 255))  #Change font colour at the end
-            text_rect = text_surface.get_rect() 
+                
+                #Choose a font and size
+                if settings.getFont() == 0:
+                    font = "Arial"
+                elif settings.getFont() == 1:
+                    font = "Helvetica Neue"
+                elif settings.getFont() == 2:
+                    font = "Verdana"  
 
-            # Create a new surface for the text box (Background colour)
-            text_box = pygame.Surface((text_rect.width, text_rect.height))
-            text_box.set_alpha(128)  # Set the alpha value of the color to make it transparent
-            text_box.fill((200, 200, 200))  # Fill with light gray color
+                if settings.getFontSize() == 0:
+                    font_size = 30 
+                elif settings.getFontSize() == 1:
+                    font_size = 40
+                elif settings.getFontSize() == 2:
+                    font_size = 50
 
-            #Modify the screen alignment of the text box
+                my_font = pygame.font.SysFont(font, font_size)
 
-            # Get the rectangle of the text surface and center it in the text box surface
-            text_rect.center = text_box.get_rect().center
+                if settings.getFontColour() == 0:
+                    font_colour = colours.BLACK
+                elif settings.getFontColour() == 1:
+                    font_colour = colours.WHITE
+                elif settings.getFontColour() == 2:
+                    font_colour = colours.RED
+                elif settings.getFontColour() == 3:
+                    font_colour = colours.GREEN
+                elif settings.getFontColour() == 4: 
+                    font_colour = colours.BLUE
+                elif settings.getFontColour() == 5:
+                    font_colour = colours.CYAN 
 
-            # Blit the text surface onto the text box surface
-            text_box.blit(text_surface, text_rect)
+                # Make the text and text box surfaces
+                text_surface = my_font.render(f"{user} {message}", False, font_colour)  #Change font colour at the end
+                text_rect = text_surface.get_rect() 
 
-            # Get the new rectangle of the text surface and center it in the screen surface
-            text_rect = text_box.get_rect()
-            text_rect.midbottom = screen.get_rect().midbottom
+                # Create a new surface for the text box (Background colour)
+                text_box = pygame.Surface((text_rect.width, text_rect.height))
+                text_box.set_alpha(128)  # Set the alpha value of the color to make it transparent
+                text_box.fill((200, 200, 200))  # Fill with light gray color
 
-            # Blit the text box surface onto the main screen surface
-            screen.blit(text_box, text_rect)
+                #Modify the screen alignment of the text box
+
+                # Get the rectangle of the text surface and center it in the text box surface
+                text_rect.center = text_box.get_rect().center
+
+                # Blit the text surface onto the text box surface
+                text_box.blit(text_surface, text_rect)
+
+                # Get the new rectangle of the text surface and center it in the screen surface
+                text_rect = text_box.get_rect()
+                text_rect.midbottom = screen.get_rect().midbottom
+
+                # Blit the text box surface onto the main screen surface
+                screen.blit(text_box, text_rect)
     if gamemode == 0:
         try:
             game = Campaign.Campaign(settings.getLevel())
