@@ -233,10 +233,10 @@ def display_game_screen(gamemode, settings):
 
                 # Blit the text box surface onto the main screen surface
                 screen.blit(text_box, text_rect)
-                
+
     pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
     pygame.mixer.music.play(-1) #"-1" plays music indefinitely
-    pygame.mixer.music.set_volume(0.5)  # Adjust the volume level (0.0 - 1.0)
+    pygame.mixer.music.set_volume(1*settings.getAudio())  # Adjust the volume level (0.0 - 1.0)
 
     if gamemode == 0:
         try:
