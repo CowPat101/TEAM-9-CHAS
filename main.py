@@ -348,7 +348,6 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     clap_x.set_volume(1*settings.getSFX())
 
     # load background image to the screen
-
     background = pygame.image.load(resource_path("placeholder_sprites/background.jpeg"))
     clap_image= pygame.image.load(resource_path("placeholder_sprites/Clapping.png")).convert_alpha()
     piano_image_blank = pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-blank.png")).convert_alpha()
