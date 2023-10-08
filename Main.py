@@ -1,22 +1,83 @@
 import pygame
 import sys
 import pygame_menu as pm
-import Campaign
 import configparser
 import os.path
-import Settings
 import time
-import colours
 
-
-
-
-# Constants for font and font size options
+# Constants for fonts
 FONT_OPTIONS = [("Arial", "arial"), ("Helvetica Neue", "helvetica"), ("Verdana", "verdana")]
-FONT_SIZE_OPTIONS = [("Small", "small"), ("Medium", "medium"), ("Large", "large")]
-
-# Constants for font color options
+FONT_SIZE_OPTIONS = [("Small", "small", 30), ("Medium", "medium", 40), ("Large", "large", 50)]
 FONT_COLOR_OPTIONS = [("Black", "black"), ("White", "white"), ("Red", "red"), ("Green", "green"), ("Blue", "blue"), ("Cyan", "cyan")]
+
+
+RED = (255, 0, 0)
+CYAN = (0, 100, 100)    
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+YELLOW = (255, 255, 0)
+GREEN = (0, 128, 0)
+BLUE = (0, 0, 255)
+MAGENTA = (255, 0, 255)
+ORANGE = (255, 165, 0)
+PURPLE = (128, 0, 128)
+PINK = (255, 192, 203)
+GREY = (128, 128, 128)
+BROWN = (165, 42, 42)
+LIME = (0, 255, 0)
+class Campaign:
+    level_info = []
+    rounds = -1
+    current_round = 0
+    def __init__(self, level):
+        try:
+            open_level = open(f"levels/level{level}.txt", "r")
+            self.level_info = open_level.readlines()
+            self.rounds = len(self.level_info)
+        except:
+            print("Error: Level not found")
+            exit()
+    
+    def get_round(self, round_num):
+        return self.level_info[round_num]
+    def get_rounds(self):
+        return self.rounds
+
+class Settings():
+    Subtitles = False
+    Font = "arial"
+    Font_size = "medium"
+    Font_colour = "black"
+    Audio = 0.5
+    SFX = 1.0
+    Level = 1
+    #declare all the variables that will be used in the settings menu
+    def __init__(self, gSubtitles, gFont, gFont_size, gFont_colour, gAudio, gSFX, gLevel):
+        #assign the variables to the values passed in the constructor
+        self.Subtitles = gSubtitles
+        self.Font = gFont
+        self.Font_size = gFont_size
+        self.Font_colour = gFont_colour
+        self.Audio = gAudio
+        self.SFX = gSFX
+        self.Level = gLevel
+    #getters for all the variables
+    getSubtitles = lambda self: self.Subtitles
+    getFont = lambda self: self.Font
+    getFontSize = lambda self: self.Font_size
+    getFontColour = lambda self: self.Font_colour
+    getAudio = lambda self: self.Audio
+    getSFX = lambda self: self.SFX
+    getLevel = lambda self: self.Level
+    #setters for all the variables
+    setSubtitles = lambda self, gSubtitles: setattr(self, "Subtitles", gSubtitles)
+    setFont = lambda self, gFont: setattr(self, "Font", gFont)
+    setFontSize = lambda self, gFont_size: setattr(self, "Font_size", gFont_size)
+    setFontColour = lambda self, gFont_colour: setattr(self, "Font_colour", gFont_colour)
+    setAudio = lambda self, gAudio: setattr(self, "Audio", gAudio)
+    setSFX = lambda self, gSFX: setattr(self, "SFX", gSFX)
+    setLevel = lambda self, gLevel: setattr(self, "Level", gLevel)
+
 
 def initialize_pygame():
     pygame.mixer.pre_init()
@@ -74,7 +135,7 @@ def reset_config_file_new_user(settings):
 
 #Display Main menu
 def display_main_menu(screen, window_width, window_height):
-    settings = Settings.Settings(False, 0, 1, 0, 0.5, 1.0, 1)
+    settings = Settings(False, 0, 1, 0, 0.5, 1.0, 1)
 
     # Create a Pygame Menu instance
     main_menu = pm.Menu("Main Menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
@@ -167,7 +228,7 @@ def next_game(settings, screen, window_width, window_height):
     next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
     next_menu.add.label(title="You have unlocked the next level!", align=pm.locals.ALIGN_CENTER)
     #increment the global variable level by one
-    newSetting = Settings.Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(), settings.getLevel()+1)
+    newSetting = Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(), settings.getLevel()+1)
     settings.setLevel(settings.getLevel()+1)
     reset_config_file_new_user(newSetting)
     next_menu.add.button(title="Next Level", 
@@ -185,7 +246,7 @@ def finished_campaign(settings, screen, window_width, window_height):
     # Add buttons to the menu
     next_menu.add.label(title="You have completed the campaign!", align=pm.locals.ALIGN_CENTER)
     next_menu.add.label(title="Well done!", align=pm.locals.ALIGN_CENTER)
-    newSetting = Settings.Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(),1)
+    newSetting = Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(),1)
     reset_config_file_new_user(newSetting)
     next_menu.add.button(title="Return To Main Menu", 
                         action=lambda: display_main_menu(screen, window_width, window_height), align=pm.locals.ALIGN_CENTER) 
@@ -199,36 +260,20 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
         if settings.getSubtitles() == True:
             if time.time() - text_start_time < 3:  # Display text for 3 seconds
 
-                
-                #Choose a font and size
-                if settings.getFont() == 0:
-                    font = "Arial"
-                elif settings.getFont() == 1:
-                    font = "Helvetica Neue"
-                elif settings.getFont() == 2:
-                    font = "Verdana"  
-
-                if settings.getFontSize() == 0:
-                    font_size = 30 
-                elif settings.getFontSize() == 1:
-                    font_size = 40
-                elif settings.getFontSize() == 2:
-                    font_size = 50
-
-                my_font = pygame.font.SysFont(font, font_size)
+                my_font = pygame.font.SysFont(FONT_OPTIONS[settings.getFont()][1], FONT_SIZE_OPTIONS[settings.getFontSize()][2])
 
                 if settings.getFontColour() == 0:
-                    font_colour = colours.BLACK
+                    font_colour = BLACK
                 elif settings.getFontColour() == 1:
-                    font_colour = colours.WHITE
+                    font_colour = WHITE
                 elif settings.getFontColour() == 2:
-                    font_colour = colours.RED
+                    font_colour = RED
                 elif settings.getFontColour() == 3:
-                    font_colour = colours.GREEN
+                    font_colour = GREEN
                 elif settings.getFontColour() == 4: 
-                    font_colour = colours.BLUE
+                    font_colour = BLUE
                 elif settings.getFontColour() == 5:
-                    font_colour = colours.CYAN 
+                    font_colour = CYAN 
 
                 # Make the text and text box surfaces
                 text_surface = my_font.render(f"{user} {message}", False, font_colour)  #Change font colour at the end
@@ -261,7 +306,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
 
     if gamemode == 0:
         try:
-            game = Campaign.Campaign(settings.getLevel())
+            game = Campaign(settings.getLevel())
             print(f"level: {settings.getLevel()}")
             total_rounds = game.get_rounds()
             current_round = 0
@@ -432,13 +477,13 @@ def display_settings_menu(settings, screen, window_width, window_height):
 
     #Make the settings in config be reset to default
     def reset_settings():
-        resetSettings = Settings.Settings(False, 0, 1, 0, 0.5, 1.0, settings.getLevel())
+        resetSettings = Settings(False, 0, 1, 0, 0.5, 1.0, settings.getLevel())
         reset_config_file_new_user(resetSettings)   
         display_main_menu()
 
 
     def reset_level():
-        resetSetting = Settings.Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(), 1)
+        resetSetting = Settings(settings.getSubtitles(), settings.getFont(), settings.getFontSize(), settings.getFontColour(),settings.getAudio(), settings.getSFX(), 1)
         reset_config_file_new_user(resetSetting)   
         display_main_menu()
 
