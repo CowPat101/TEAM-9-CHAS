@@ -549,5 +549,5 @@ def draw_back_button():
             return go_back   
 
 
-display_main_menu()
-
+if __name__ == "__main__":
+    display_main_menu()
