@@ -369,6 +369,15 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
 
     # Define the button rectangle
     button_rect = pygame.Rect(10, 10, 100, 50)
+
+    key_rectA = pygame.Rect(96, 91, 82, 360)
+    key_rectB = pygame.Rect(178, 91, 82, 360)
+    key_rectC = pygame.Rect(260, 91, 82, 360)
+    key_rectD = pygame.Rect(342, 91, 82, 360)
+    key_rectE = pygame.Rect(424, 91, 82, 360)
+    key_rectF = pygame.Rect(506, 91, 82, 360)
+    key_rectG = pygame.Rect(588, 91, 82, 360)
+ 
     # Define the button text
     button_font = pygame.font.SysFont(FONT_OPTIONS[settings.getFont()], FONT_SIZE_OPTIONS[settings.getFontSize()][2])
     if settings.getFontColour() == 0:
@@ -468,7 +477,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                     pygame.time.delay(250)      
                     print(f"played {played} of {claps}")
       
+
             if gamemode == 1:
+                #draw the button for the keys
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         display("Player", "plays piano key A")
@@ -479,7 +490,6 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         player_group = pygame.sprite.Group(player)
                         # draw the sprite
                         player_group.draw(screen)
-
                         pygame.display.flip()
                         pygame.mixer.Sound.play(s1)
                         pygame.time.delay(250)
@@ -554,7 +564,82 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         player_group.draw(screen)
                         pygame.display.flip()  # update the screen
                         pygame.mixer.Sound.play(clap_x)
-                        pygame.time.delay(250)      
+                        pygame.time.delay(250)  
+
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if key_rectA.collidepoint(pygame.mouse.get_pos()):
+                        display("Player", "plays piano key A")
+                        # load the image and scale it to 75% of its original size
+                        # add an image of piano key A in the bottom center by padd it so its 30 pixels above it
+                        player = Player((window_width / 2, window_height / 2), piano_imageA)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s1)
+                        pygame.time.delay(250)
+                    if key_rectB.collidepoint(pygame.mouse.get_pos()):
+                        display("Player", "plays piano key B")
+                        player = Player((window_width / 2, window_height / 2), piano_imageB)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s2)
+                        pygame.time.delay(250)
+                    if key_rectC.collidepoint(pygame.mouse.get_pos()):
+                        display("Player", "plays piano key C")
+                        player = Player((window_width / 2, window_height / 2), piano_imageC)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s3)
+                        pygame.time.delay(250)
+                    if key_rectD.collidepoint(pygame.mouse.get_pos()):
+                        display("Player", "plays piano key D")
+                        player = Player((window_width / 2, window_height / 2), piano_imageD)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s4)
+                        pygame.time.delay(250)
+                    if key_rectE.collidepoint(pygame.mouse.get_pos()):
+                        display("Player", "plays piano key E")
+                        player = Player((window_width / 2, window_height / 2), piano_imageE)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s5)
+                        pygame.time.delay(250)
+                    if key_rectF.collidepoint(pygame.mouse.get_pos()):
+                        display("Player", "plays piano key F")
+                        player = Player((window_width / 2, window_height / 2), piano_imageF)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s6)
+                        pygame.time.delay(250)
+                    if key_rectG.collidepoint(pygame.mouse.get_pos()):
+                        display("Player", "plays piano key G")
+                        player = Player((window_width / 2, window_height / 2), piano_imageG)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s7)
+                        pygame.time.delay(250)
+
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.mixer.music.stop()
                 display_main_menu(screen, window_width, window_height)
