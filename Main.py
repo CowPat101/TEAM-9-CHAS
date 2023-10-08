@@ -119,6 +119,7 @@ def display_main_menu():
 
 # display game menu
 def display_game_menu(settings):
+    pygame.mixer.music.stop()
     # Create a Pygame Menu instance
     game_menu = pm.Menu("Game menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
 
@@ -172,9 +173,6 @@ def finished_campaign(settings):
 
 def display_game_screen(gamemode, settings):
 
-    pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
-    pygame.mixer.music.play(-1) #"-1" plays music indefinitely
-    pygame.mixer.music.set_volume(0.5)  # Adjust the volume level (0.0 - 1.0)
 
     #Function to display a subtitle to the screen while allowing complete interaction with the game
     def display(user, message):
@@ -235,6 +233,11 @@ def display_game_screen(gamemode, settings):
 
                 # Blit the text box surface onto the main screen surface
                 screen.blit(text_box, text_rect)
+                
+    pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
+    pygame.mixer.music.play(-1) #"-1" plays music indefinitely
+    pygame.mixer.music.set_volume(0.5)  # Adjust the volume level (0.0 - 1.0)
+
     if gamemode == 0:
         try:
             game = Campaign.Campaign(settings.getLevel())
@@ -244,8 +247,8 @@ def display_game_screen(gamemode, settings):
             played = 0
             computer_played = False
         except:
-            finished_campaign(settings)
             pygame.mixer.music.stop()
+            finished_campaign(settings)
             display_main_menu()
     
     s1 = pygame.mixer.Sound("placeholder_sounds/beep1.ogg")
