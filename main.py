@@ -369,7 +369,6 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
 
     # Define the button rectangle
     button_rect = pygame.Rect(10, 10, 100, 50)
-
     # Define the button text
     button_font = pygame.font.SysFont(FONT_OPTIONS[settings.getFont()], FONT_SIZE_OPTIONS[settings.getFontSize()][2])
     if settings.getFontColour() == 0:
