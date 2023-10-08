@@ -37,12 +37,15 @@ class Campaign:
     current_round = 0
     def __init__(self, level):
         try:
-            open_level = open(f"levels/level{level}.txt", "r")
+            # Use resource_path to get the absolute path of the level file
+            level_file = resource_path(f"levels/level{level}.txt")
+            open_level = open(level_file, "r")
             self.level_info = open_level.readlines()
             self.rounds = len(self.level_info)
         except:
             print("Error: Level not found")
             exit()
+
     
     def get_round(self, round_num):
         return self.level_info[round_num]
