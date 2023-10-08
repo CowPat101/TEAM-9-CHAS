@@ -319,7 +319,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
             finished_campaign(settings)
             display_main_menu(screen, window_width, window_height)
     
-    clap_x = pygame.mixer.Sound("placeholder_sounds\clap.ogg")
+    clap_x = pygame.mixer.Sound("placeholder_sounds/clap.ogg")
     s1 = pygame.mixer.Sound("placeholder_sounds/piano-a.ogg")
     s2 = pygame.mixer.Sound("placeholder_sounds/piano-b.ogg")
     s3 = pygame.mixer.Sound("placeholder_sounds/piano-c.ogg")
@@ -339,8 +339,16 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     clap_x.set_volume(1*settings.getSFX())
 
     # load background image to the screen
-    background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
-    image = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
+    background = pygame.image.load("placeholder_sprites/IMG_5565.jpeg")
+    clap_image= pygame.image.load("placeholder_sprites/Clapping.png").convert_alpha()
+    piano_imageA= pygame.image.load("placeholder_sprites/keyboards/Keyboard-A.png").convert_alpha()
+    piano_imageB= pygame.image.load("placeholder_sprites/keyboards/Keyboard-B.png").convert_alpha()
+    piano_imageC= pygame.image.load("placeholder_sprites/keyboards/Keyboard-C.png").convert_alpha()
+    piano_imageD= pygame.image.load("placeholder_sprites/keyboards/Keyboard-D.png").convert_alpha()
+    piano_imageE= pygame.image.load("placeholder_sprites/keyboards/Keyboard-E.png").convert_alpha()
+    piano_imageF= pygame.image.load("placeholder_sprites/keyboards/Keyboard-F.png").convert_alpha()
+    piano_imageG= pygame.image.load("placeholder_sprites/keyboards/Keyboard-G.png").convert_alpha()
+
     # game loop to keep the window open
     while True:
         #clear the screen
@@ -358,8 +366,8 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                     text_start_time = time.time()
                     display("Ringleader", "claps")
                     pygame.mixer.Sound.play(clap_x)
-                    # make the sprite with image 1
-                    comp = Player((window_width / 2, window_height / 2), image)
+                    # make the sprite with image 1clapclap_image
+                    comp = Player((window_width / 2, window_height / 2), clap_image)
                     # add the sprite to the group
                     comp_group = pygame.sprite.Group(comp)
                     # draw the sprite
@@ -388,8 +396,8 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
             if gamemode == 0:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     display("Player", "claps")
-                    # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), image)
+                    # make the sprite with image clap_image
+                    player = Player((window_width / 2, window_height / 2), clap_image)
                     # add the sprite to the group
                     player_group = pygame.sprite.Group(player)
                     # draw the sprite
@@ -403,8 +411,8 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     display("Player", "claps")
                     print("mouse clicked")
-                    # make the sprite with image 1
-                    player = Player((window_width / 2, window_height / 2), image)
+                    # make the sprite with image clap_image
+                    player = Player((window_width / 2, window_height / 2), clap_image)
                     # add the sprite to the group
                     player_group = pygame.sprite.Group(player)
                     # draw the sprite
@@ -416,19 +424,33 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                     print(f"played {played} of {claps}")
       
             if gamemode == 1:
+                #
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         display("Player", "plays piano key A")
+                        # add an image of piano key A in the bottom center by padd it so its 30 pixels above it
+                        player = Player((window_width / 2, window_height / 2), piano_imageA)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+
                         pygame.display.flip()
                         pygame.mixer.Sound.play(s1)
                         pygame.time.delay(250)
                     if event.key == pygame.K_s:
                         display("Player", "plays piano key B")
+                        player = Player((window_width / 2, window_height / 2), piano_imageB)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
                         pygame.display.flip()
                         pygame.mixer.Sound.play(s2)
                         pygame.time.delay(250)
                     if event.key == pygame.K_d:
                         display("Player", "plays piano key C")
+                        player
                         pygame.display.flip()
                         pygame.mixer.Sound.play(s3)
                         pygame.time.delay(250)
@@ -455,8 +477,8 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                     if event.key == pygame.K_k:
                         display("Player", "claps")
                         print("mouse clicked")
-                        # make the sprite with image 1
-                        player = Player((window_width / 2, window_height / 2), image)
+                        # make the sprite with image 1clapclap_image
+                        player = Player((window_width / 2, window_height / 2), clap_image)
                         # add the sprite to the group
                         player_group = pygame.sprite.Group(player)
                         # draw the sprite
