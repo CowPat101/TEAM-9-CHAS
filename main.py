@@ -31,6 +31,29 @@ PINK = (255, 192, 203)
 GREY = (128, 128, 128)
 BROWN = (165, 42, 42)
 LIME = (0, 255, 0)
+
+BACKGROUND_IMAGE = resource_path("placeholder_sprites/background.png")
+
+MYTHEME_GLOBAL = pm.themes.THEME_ORANGE.copy()
+#change the select font colour
+MYTHEME_GLOBAL.widget_font_color = BLACK
+
+#make on hover colour white
+MYTHEME_GLOBAL.widget_font_color_focused = BLACK
+#on button select colour
+MYTHEME_GLOBAL.widget_font_color_selected = BLACK
+
+MYTHEME_GLOBAL.title_background_color=BLACK
+
+MYTHEME_GLOBAL.selection_color = BLACK
+
+myimage = pm.baseimage.BaseImage(
+image_path=BACKGROUND_IMAGE,
+drawing_mode=pm.baseimage.IMAGE_MODE_SIMPLE
+)
+
+MYTHEME_GLOBAL.background_color = myimage
+
 class Campaign:
     level_info = []
     rounds = -1
@@ -143,12 +166,16 @@ def reset_config_file_new_user(settings):
     with open('config.ini', 'w') as conf:
         config_object.write(conf)
 
+    
 #Display Main menu
 def display_main_menu(screen, window_width, window_height):
     settings = Settings(False, 0, 1, 0, 0.5, 1.0, 1)
 
     # Create a Pygame Menu instance
-    main_menu = pm.Menu("Main Menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    main_menu = pm.Menu("Main Menu", window_width, window_height, theme=MYTHEME_GLOBAL)
+
+
+    main_menu._touchscreen = True
     if os.path.isfile("config.ini") == False:
         reset_config_file_new_user(settings)
     #loads the info from the config file
@@ -204,6 +231,7 @@ def display_main_menu(screen, window_width, window_height):
         for key in config_object[section]:
             print(f"{key} : {config_object[section][key]}")
     
+    
     main_menu.mainloop(screen)
 
 
@@ -214,7 +242,8 @@ def display_main_menu(screen, window_width, window_height):
 def display_game_menu(settings, screen, window_width, window_height):
     pygame.mixer.music.stop()
     # Create a Pygame Menu instance
-    game_menu = pm.Menu("Game menu", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    game_menu = pm.Menu("Game menu", window_width, window_height, theme=MYTHEME_GLOBAL)
+    game_menu._touchscreen = True
 
     print("at the game menu")
 
@@ -225,13 +254,14 @@ def display_game_menu(settings, screen, window_width, window_height):
                         action=lambda: display_game_screen(1, settings, screen, window_width, window_height), align=pm.locals.ALIGN_CENTER)
     # Create a back button to return to the main menu
     game_menu.add.button(title="Return To Main Menu", 
-                        action=lambda: display_main_menu(settings, screen, window_width, window_height), align=pm.locals.ALIGN_CENTER) 
+                        action=lambda: display_main_menu(screen, window_width, window_height), align=pm.locals.ALIGN_CENTER) 
     # Start the menu
     game_menu.mainloop(screen)
 
 def next_game(settings, screen, window_width, window_height):
     # Create a Pygame Menu instance
-    next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    next_menu = pm.Menu("Congrats", window_width, window_height, theme=MYTHEME_GLOBAL)
+    next_menu._touchscreen = True
 
     # Add buttons to the menu
     next_menu.add.label(title="You have completed the level!", align=pm.locals.ALIGN_CENTER)
@@ -251,7 +281,8 @@ def next_game(settings, screen, window_width, window_height):
 
 def finished_campaign(settings, screen, window_width, window_height):
     # Create a Pygame Menu instance
-    next_menu = pm.Menu("Congrats", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    next_menu = pm.Menu("Congrats", window_width, window_height, theme=MYTHEME_GLOBAL)
+    next_menu._touchscreen = True
 
     # Add buttons to the menu
     next_menu.add.label(title="You have completed the campaign!", align=pm.locals.ALIGN_CENTER)
@@ -325,7 +356,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
         except:
             pygame.mixer.music.stop()
             pygame.mixer.music.set_volume(0)
-            finished_campaign(settings)
+            finished_campaign(settings,screen, window_width, window_height)
             display_main_menu(screen, window_width, window_height)
     
     clap_x = pygame.mixer.Sound(resource_path("placeholder_sounds/clap.ogg"))
@@ -348,7 +379,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     clap_x.set_volume(1*settings.getSFX())
 
     # load background image to the screen
-    background = pygame.image.load(resource_path("placeholder_sprites/background.jpeg"))
+    background = pygame.image.load(BACKGROUND_IMAGE)
     clap_image= pygame.image.load(resource_path("placeholder_sprites/Clapping.png")).convert_alpha()
     piano_image_blank = pygame.image.load(resource_path("placeholder_sprites/keyboards/Keyboard-blank.png")).convert_alpha()
     piano_image_blank = pygame.transform.scale(piano_image_blank, (int(piano_image_blank.get_width() * 0.75), int(piano_image_blank.get_height() * 0.75)))
@@ -482,6 +513,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                 #draw the button for the keys
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key A")
                         # load the image and scale it to 75% of its original size
                         # add an image of piano key A in the bottom center by padd it so its 30 pixels above it
@@ -494,6 +528,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s1)
                         pygame.time.delay(250)
                     if event.key == pygame.K_s:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key B")
                         player = Player((window_width / 2, window_height / 2), piano_imageB)
                         # add the sprite to the group
@@ -504,6 +541,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s2)
                         pygame.time.delay(250)
                     if event.key == pygame.K_d:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key C")
                         player = Player((window_width / 2, window_height / 2), piano_imageC)
                         # add the sprite to the group
@@ -514,6 +554,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s3)
                         pygame.time.delay(250)
                     if event.key == pygame.K_f:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key D")
                         player = Player((window_width / 2, window_height / 2), piano_imageD)
                         # add the sprite to the group
@@ -524,6 +567,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s4)
                         pygame.time.delay(250)
                     if event.key == pygame.K_g:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key E")
                         player = Player((window_width / 2, window_height / 2), piano_imageE)
                         # add the sprite to the group
@@ -534,6 +580,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s5)
                         pygame.time.delay(250)
                     if event.key == pygame.K_h:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key F")
                         player = Player((window_width / 2, window_height / 2), piano_imageF)
                         # add the sprite to the group
@@ -544,6 +593,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s6)
                         pygame.time.delay(250)
                     if event.key == pygame.K_j:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key G")
                         player = Player((window_width / 2, window_height / 2), piano_imageG)
                         # add the sprite to the group
@@ -554,6 +606,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s7)
                         pygame.time.delay(250)
                     if event.key == pygame.K_k:
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "claps")
                         print("mouse clicked")
                         # make the sprite with image 1clapclap_image
@@ -568,6 +623,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if key_rectA.collidepoint(pygame.mouse.get_pos()):
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key A")
                         # load the image and scale it to 75% of its original size
                         # add an image of piano key A in the bottom center by padd it so its 30 pixels above it
@@ -580,6 +638,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s1)
                         pygame.time.delay(250)
                     if key_rectB.collidepoint(pygame.mouse.get_pos()):
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key B")
                         player = Player((window_width / 2, window_height / 2), piano_imageB)
                         # add the sprite to the group
@@ -590,6 +651,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s2)
                         pygame.time.delay(250)
                     if key_rectC.collidepoint(pygame.mouse.get_pos()):
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key C")
                         player = Player((window_width / 2, window_height / 2), piano_imageC)
                         # add the sprite to the group
@@ -600,6 +664,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s3)
                         pygame.time.delay(250)
                     if key_rectD.collidepoint(pygame.mouse.get_pos()):
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key D")
                         player = Player((window_width / 2, window_height / 2), piano_imageD)
                         # add the sprite to the group
@@ -610,6 +677,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s4)
                         pygame.time.delay(250)
                     if key_rectE.collidepoint(pygame.mouse.get_pos()):
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key E")
                         player = Player((window_width / 2, window_height / 2), piano_imageE)
                         # add the sprite to the group
@@ -620,6 +690,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s5)
                         pygame.time.delay(250)
                     if key_rectF.collidepoint(pygame.mouse.get_pos()):
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key F")
                         player = Player((window_width / 2, window_height / 2), piano_imageF)
                         # add the sprite to the group
@@ -630,6 +703,9 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                         pygame.mixer.Sound.play(s6)
                         pygame.time.delay(250)
                     if key_rectG.collidepoint(pygame.mouse.get_pos()):
+                        screen.blit(background, (0, 0))
+                        pygame.draw.rect(screen, GREY, button_rect)
+                        screen.blit(button_text, button_rect.move(5, 5))
                         display("Player", "plays piano key G")
                         player = Player((window_width / 2, window_height / 2), piano_imageG)
                         # add the sprite to the group
@@ -709,7 +785,8 @@ def display_settings_menu(settings, screen, window_width, window_height):
         display_main_menu(screen, window_width, window_height)
 
     # Create a Pygame Menu instance
-    settings_menu = pm.Menu("Settings", window_width, window_height, theme=pm.themes.THEME_DEFAULT)
+    settings_menu = pm.Menu("Settings", window_width, window_height, theme=MYTHEME_GLOBAL)
+    settings_menu._touchscreen = True
 
     config_object = configparser.ConfigParser()
     #Subtitle activation
