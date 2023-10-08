@@ -410,7 +410,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     key_rectG = pygame.Rect(588, 91, 82, 360)
  
     # Define the button text
-    button_font = pygame.font.SysFont(FONT_OPTIONS[settings.getFont()], FONT_SIZE_OPTIONS[settings.getFontSize()][2])
+    button_font = pygame.font.SysFont("Helvetica Neue", 40)
     if settings.getFontColour() == 0:
         font_default_colour = BLACK
     elif settings.getFontColour() == 1:
