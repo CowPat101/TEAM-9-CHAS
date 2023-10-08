@@ -343,13 +343,12 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     # game loop to keep the window open
     while True:
         #clear the screen
-
         screen.blit(background, (0, 0))
         pygame.display.flip()  # update the screen
         if gamemode == 0:
             if current_round == total_rounds:
                 pygame.mixer.music.set_volume(0)
-                next_game(settings)
+                next_game(settings,screen, window_width, window_height)
                 return
             if computer_played == False:
                 pygame.time.delay(250)

@@ -1,3 +1,5 @@
 .vscode
 circus_melody*
 config.ini
+dist/
+build/
