@@ -394,10 +394,6 @@ def display_game_screen(gamemode, settings):
                 sys.exit()
         
 
-def play_sound(sound):
-    """"""
-    pass
-
 def clap():
     pygame.mixer.Sound.play(clap_x)
 
