@@ -391,8 +391,7 @@ def display_game_screen(gamemode, settings):
             
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
-        
+                sys.exit()       
 
 def clap():
     pygame.mixer.Sound.play(clap_x)
