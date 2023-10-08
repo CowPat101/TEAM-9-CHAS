@@ -13,6 +13,7 @@ window_width = 800  # Set your window dimensions
 window_height = 600
 screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("My Game")
+clap_x = pygame.mixer.Sound("placeholder_sounds\clap.ogg")
 
 IMAGE = pygame.image.load("placeholder_sprites\Clapping.png").convert_alpha()
 class Player(pygame.sprite.Sprite):
@@ -170,6 +171,10 @@ def finished_campaign(settings):
 
 def display_game_screen(gamemode, settings):
 
+    pygame.mixer.music.load("placeholder_sounds/simple-loop.ogg") #sets music
+    pygame.mixer.music.play(-1) #"-1" plays music indefinitely
+    pygame.mixer.music.set_volume(0.5)  # Adjust the volume level (0.0 - 1.0)
+
     #Function to display a subtitle to the screen while allowing complete interaction with the game
     def display(user, message):
         if time.time() - text_start_time < 3:  # Display text for 3 seconds
@@ -209,10 +214,18 @@ def display_game_screen(gamemode, settings):
             computer_played = False
         except:
             finished_campaign(settings)
+            pygame.mixer.music.stop()
             display_main_menu()
     
+    s1 = pygame.mixer.Sound("placeholder_sounds/beep1.ogg")
+    s2 = pygame.mixer.Sound("placeholder_sounds/beep2.ogg")
+    s3 = pygame.mixer.Sound("placeholder_sounds/beep3.ogg")
+    s4 = pygame.mixer.Sound("placeholder_sounds/beep4.ogg")
+    s5 = pygame.mixer.Sound("placeholder_sounds/beep5.ogg")
+
     # load background image to the screen
     background = pygame.image.load("placeholder_sprites\IMG_5565.jpeg")
+
     # game loop to keep the window open
     while True:
         #clear the screen
@@ -256,6 +269,7 @@ def display_game_screen(gamemode, settings):
             
 
         for event in pygame.event.get():
+            text_start_time = time.time()  
             if gamemode == 0:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     display("Player", "claps")
@@ -272,7 +286,6 @@ def display_game_screen(gamemode, settings):
                     print(f"played {played} of {claps}")                  
                 # when the user clicks the left mouse button play the sound
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    text_start_time = time.time()
                     display("Player", "claps")
                     print("mouse clicked")
                     # make the sprite with image 1
@@ -286,28 +299,48 @@ def display_game_screen(gamemode, settings):
                     clap()
                     pygame.time.delay(250)      
                     print(f"played {played} of {claps}")
-                    
+      
             if gamemode == 1:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
                         display("Player", "plays sound 1")
-                        play_sound(1)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s1)
+                        pygame.time.delay(250)
                     if event.key == pygame.K_s:
                         display("Player", "plays sound 2")
-                        play_sound(2)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s2)
+                        pygame.time.delay(250)
                     if event.key ==  pygame.K_d:
                         display("Player", "plays sound 3")
-                        play_sound(3)
+                        pygame.mixer.Sound.play(s3)
+                        pygame.display.flip()
+                        pygame.time.delay(250)
                     if event.key == pygame.K_f:
                         display("Player", "plays sound 4")
-                        play_sound(4)
+                        pygame.mixer.Sound.play(s4)
+                        pygame.display.flip()
+                        pygame.time.delay(250)
                     if event.key == pygame.K_g:
                         display("Player", "plays sound 5")
-                        play_sound(5)
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s5)
+                        pygame.time.delay(250)
                     if event.key == pygame.K_h:
                         display("Player", "claps")
+                        print("mouse clicked")
+                        # make the sprite with image 1
+                        player = Player((window_width / 2, window_height / 2), IMAGE)
+                        # add the sprite to the group
+                        player_group = pygame.sprite.Group(player)
+                        # draw the sprite
+                        player_group.draw(screen)
+                        pygame.display.flip()  # update the screen
                         clap()
+                        pygame.time.delay(250)      
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                pygame.mixer.music.stop()
                 display_main_menu()
             
             if event.type == pygame.QUIT:
@@ -316,12 +349,11 @@ def display_game_screen(gamemode, settings):
         
 
 def play_sound(sound):
-    pygame.mixer.music.load(f"placeholder_sounds/beep{sound}.ogg")
-    pygame.mixer.music.play()
+    """"""
+    pass
 
 def clap():
-    pygame.mixer.music.load("placeholder_sounds\clap.wav")
-    pygame.mixer.music.play()
+    pygame.mixer.Sound.play(clap_x)
 
 #Settings menu logic
 def display_settings_menu(settings):
