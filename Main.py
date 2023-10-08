@@ -254,11 +254,13 @@ def display_game_screen(gamemode, settings):
             display_main_menu()
     
     
-    s1 = pygame.mixer.Sound("placeholder_sounds/beep1.ogg")
-    s2 = pygame.mixer.Sound("placeholder_sounds/beep2.ogg")
-    s3 = pygame.mixer.Sound("placeholder_sounds/beep3.ogg")
-    s4 = pygame.mixer.Sound("placeholder_sounds/beep4.ogg")
-    s5 = pygame.mixer.Sound("placeholder_sounds/beep5.ogg")
+    s1 = pygame.mixer.Sound("placeholder_sounds/piano-a.ogg")
+    s2 = pygame.mixer.Sound("placeholder_sounds/piano-b.ogg")
+    s3 = pygame.mixer.Sound("placeholder_sounds/piano-c.ogg")
+    s4 = pygame.mixer.Sound("placeholder_sounds/piano-d.ogg")
+    s5 = pygame.mixer.Sound("placeholder_sounds/piano-e.ogg")
+    s6 = pygame.mixer.Sound("placeholder_sounds/piano-f.ogg")
+    s7 = pygame.mixer.Sound("placeholder_sounds/piano-g.ogg")
 
     #set volume of sounds
     s1.set_volume(1*settings.getSFX())
@@ -266,6 +268,8 @@ def display_game_screen(gamemode, settings):
     s3.set_volume(1*settings.getSFX())
     s4.set_volume(1*settings.getSFX())
     s5.set_volume(1*settings.getSFX())
+    s6.set_volume(1*settings.getSFX())
+    s7.set_volume(1*settings.getSFX())
     clap_x.set_volume(1*settings.getSFX())
 
     # load background image to the screen
@@ -349,31 +353,41 @@ def display_game_screen(gamemode, settings):
             if gamemode == 1:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
-                        display("Player", "plays sound 1")
+                        display("Player", "plays piano key A")
                         pygame.display.flip()
                         pygame.mixer.Sound.play(s1)
                         pygame.time.delay(250)
                     if event.key == pygame.K_s:
-                        display("Player", "plays sound 2")
+                        display("Player", "plays piano key B")
                         pygame.display.flip()
                         pygame.mixer.Sound.play(s2)
                         pygame.time.delay(250)
-                    if event.key ==  pygame.K_d:
-                        display("Player", "plays sound 3")
-                        pygame.mixer.Sound.play(s3)
+                    if event.key == pygame.K_d:
+                        display("Player", "plays piano key C")
                         pygame.display.flip()
+                        pygame.mixer.Sound.play(s3)
                         pygame.time.delay(250)
                     if event.key == pygame.K_f:
-                        display("Player", "plays sound 4")
-                        pygame.mixer.Sound.play(s4)
+                        display("Player", "plays piano key D")
                         pygame.display.flip()
+                        pygame.mixer.Sound.play(s4)
                         pygame.time.delay(250)
                     if event.key == pygame.K_g:
-                        display("Player", "plays sound 5")
+                        display("Player", "plays piano key E")
                         pygame.display.flip()
                         pygame.mixer.Sound.play(s5)
                         pygame.time.delay(250)
                     if event.key == pygame.K_h:
+                        display("Player", "plays piano key F")
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s6)
+                        pygame.time.delay(250)
+                    if event.key == pygame.K_j:
+                        display("Player", "plays piano key G")
+                        pygame.display.flip()
+                        pygame.mixer.Sound.play(s7)
+                        pygame.time.delay(250)
+                    if event.key == pygame.K_k:
                         display("Player", "claps")
                         print("mouse clicked")
                         # make the sprite with image 1
