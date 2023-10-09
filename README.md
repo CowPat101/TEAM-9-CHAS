@@ -9,6 +9,11 @@ Martin
 Marija
 Anjy
 
+# To run normally
+'''
+python main.py
+'''
+
 # Pyinstaller code
 '''
 pyinstaller --onefile --add-data "resources:resources" main.py
