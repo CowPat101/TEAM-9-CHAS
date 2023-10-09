@@ -31,35 +31,23 @@ def resource_path(relative_path):
     base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-
+#Define colours global
 RED = (255, 0, 0)
 CYAN = (0, 100, 100)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-YELLOW = (255, 255, 0)
 GREEN = (0, 128, 0)
 BLUE = (0, 0, 255)
-MAGENTA = (255, 0, 255)
 ORANGE = (255, 165, 0)
-PURPLE = (128, 0, 128)
-PINK = (255, 192, 203)
 GREY = (128, 128, 128)
-BROWN = (165, 42, 42)
-LIME = (0, 255, 0)
 
+#Update background theme
 BACKGROUND_IMAGE = resource_path("resources/placeholder_sprites/background.png")
-
 MYTHEME_GLOBAL = pm.themes.THEME_ORANGE.copy()
-# change the select font colour
 MYTHEME_GLOBAL.widget_font_color = BLACK
-
-# make on hover colour white
 MYTHEME_GLOBAL.widget_font_color_focused = BLACK
-# on button select colour
 MYTHEME_GLOBAL.widget_font_color_selected = BLACK
-
 MYTHEME_GLOBAL.title_background_color = BLACK
-
 MYTHEME_GLOBAL.selection_color = BLACK
 
 myimage = pm.baseimage.BaseImage(
@@ -68,7 +56,7 @@ myimage = pm.baseimage.BaseImage(
 
 MYTHEME_GLOBAL.background_color = myimage
 
-
+#Define the class for the campaign
 class Campaign:
     level_info = []
     rounds = -1
@@ -91,7 +79,7 @@ class Campaign:
     def get_rounds(self):
         return self.rounds
 
-
+#Define the class for the settings
 class Settings:
     Subtitles = False
     Font = "arial"
@@ -133,7 +121,7 @@ class Settings:
     setSFX = lambda self, gSFX: setattr(self, "SFX", gSFX)
     setLevel = lambda self, gLevel: setattr(self, "Level", gLevel)
 
-
+#Initialise pygame
 def initialize_pygame():
     pygame.mixer.pre_init()
     pygame.mixer.init()
@@ -145,13 +133,13 @@ def initialize_pygame():
     pygame.display.set_caption("My Game")
     return screen, window_width, window_height
 
-
+#Load sound
 def load_sound(filename, volume):
     sound = pygame.mixer.Sound(filename)
     sound.set_volume(volume)
     return sound
 
-
+#Define the class for the images
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, image):
         super().__init__()
@@ -283,7 +271,7 @@ def display_game_menu(settings, screen, window_width, window_height):
     # Start the menu
     game_menu.mainloop(screen)
 
-
+#Display if level complete
 def next_game(settings, screen, window_width, window_height):
     # Create a Pygame Menu instance
     next_menu = pm.Menu("Congrats", window_width, window_height, theme=MYTHEME_GLOBAL)
@@ -325,7 +313,7 @@ def next_game(settings, screen, window_width, window_height):
     # Start the menu
     next_menu.mainloop(screen)
 
-
+#Display after all levels complete
 def finished_campaign(settings, screen, window_width, window_height):
     # Create a Pygame Menu instance
     next_menu = pm.Menu("Congrats", window_width, window_height, theme=MYTHEME_GLOBAL)
@@ -354,7 +342,7 @@ def finished_campaign(settings, screen, window_width, window_height):
     # Start the menu
     next_menu.mainloop(screen)
 
-
+#Display the game being played
 def display_game_screen(gamemode, settings, screen, window_width, window_height):
     # Function to display a subtitle to the screen while allowing complete interaction with the game
     def display(user, message):
@@ -430,6 +418,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
             display_main_menu(screen, window_width, window_height)
 
     clap_x = pygame.mixer.Sound(resource_path("resources/placeholder_sounds/clap.ogg"))
+    clap_y = pygame.mixer.Sound(resource_path("resources/placeholder_sounds/con_clap.ogg"))
     s1 = pygame.mixer.Sound(resource_path("resources/placeholder_sounds/piano-a.ogg"))
     s2 = pygame.mixer.Sound(resource_path("resources/placeholder_sounds/piano-b.ogg"))
     s3 = pygame.mixer.Sound(resource_path("resources/placeholder_sounds/piano-c.ogg"))
@@ -447,6 +436,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
     s6.set_volume(1 * settings.getSFX())
     s7.set_volume(1 * settings.getSFX())
     clap_x.set_volume(1 * settings.getSFX())
+    clap_y.set_volume(1 * settings.getSFX())
 
     # load background image to the screen
     background = pygame.image.load(BACKGROUND_IMAGE)
@@ -565,7 +555,7 @@ def display_game_screen(gamemode, settings, screen, window_width, window_height)
                 for i in range(claps):
                     text_start_time = time.time()
                     display("Ringleader", "claps")
-                    pygame.mixer.Sound.play(clap_x)
+                    pygame.mixer.Sound.play(clap_y)
                     # make the sprite with image 1clapclap_image
                     comp = Player((window_width / 2, window_height / 2), clap_image)
                     # add the sprite to the group
