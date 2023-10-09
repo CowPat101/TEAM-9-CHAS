@@ -2,7 +2,12 @@
 TEAM 9 CHAS Hackathon project
 
 # Contributors
-Jack - Test
+Jack 
+Arman
+Francesco
+Martin
+Marija
+Anjy
 
 # Pyinstaller code
 '''
